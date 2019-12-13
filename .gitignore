@@ -70,9 +70,6 @@ local.properties
 
 .sts4-cache/
 
-# Customizing
 application.properties
-mvnw
-mvnw.cmd
 
 # End of https://www.gitignore.io/api/eclipse
