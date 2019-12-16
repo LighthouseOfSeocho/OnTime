@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -39,7 +38,7 @@ public class LoginAPI {
 			StringBuilder sb = new StringBuilder();
 			sb.append("grant_type=authorization_code");
 			sb.append("&client_id="+kakaoKey);
-			sb.append("&redirect_uri=http://localhost:8000/oauth");
+			sb.append("&redirect_uri=http://localhost:9000/oauth");
 			sb.append("&code=" + authorize_code);
 			bw.write(sb.toString());
 			bw.flush();
@@ -54,6 +53,8 @@ public class LoginAPI {
 			String result = "";
 
 			while ((line = br.readLine()) != null) {
+				System.out.println("=============================================================================");
+				System.out.println(line);
 				result += line;
 			}
 			System.out.println("response body : " + result);
@@ -77,11 +78,11 @@ public class LoginAPI {
 		return access_Token;
 	}
 
-	public HashMap<String, Object> getUserInfo(String access_Token) {
+	public JsonObject getUserInfo(String access_Token) {
 		System.out.println("aaaaaaaaaaaaaa");
 		System.out.println(access_Token);
 		// 요청하는 클라이언트마다 가진 정보가 다를 수 있기에 HashMap타입으로 선언
-		HashMap<String, Object> userInfo = new HashMap<>();
+		JsonObject userInfo = new JsonObject();
 		String reqURL = "https://kapi.kakao.com/v2/user/me";
 		try {
 			URL url = new URL(reqURL);
@@ -109,25 +110,29 @@ public class LoginAPI {
 
 			System.out.println(element);
 			
+			String id = element.getAsJsonObject().get("id").getAsString();
 			JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
-			JsonObject kakao_account = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
+//			JsonObject kakao_account = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
 			String nickname = properties.getAsJsonObject().get("nickname").getAsString();
-			String email = kakao_account.getAsJsonObject().get("email").getAsString();
-			String gender = null;
-			if(kakao_account.getAsJsonObject().get("has_gender").getAsBoolean()) {
-				gender = kakao_account.getAsJsonObject().get("gender").getAsString();				
-			}
-
-			userInfo.put("nickname", nickname);
-			userInfo.put("email", email);
-			userInfo.put("gender", gender);
+//			String email = kakao_account.getAsJsonObject().get("email").getAsString();
+//			String gender = null;
+//			if(kakao_account.getAsJsonObject().get("has_gender").getAsBoolean()) {
+//				gender = kakao_account.getAsJsonObject().get("gender").getAsString();				
+//			}
+			
+			userInfo.addProperty("id", id);
+			userInfo.addProperty("nickname", nickname);
+			userInfo.addProperty("email", "abc@abc");
+			userInfo.addProperty("gender", "male"); 
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		return userInfo;
 	}
 
+	
+	//Naver
+	
 }
