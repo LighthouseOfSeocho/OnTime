@@ -14,7 +14,7 @@ import org.springframework.web.reactive.result.view.RedirectView;
 
 import com.onTime.project.loginAPI.LoginAPI;
 
-@CrossOrigin(origins = "http://localhost:8000")
+@CrossOrigin(origins = "http://localhost:9000")
 @Controller
 public class OnTimeController {
 	@Value("${kakao.key}")
@@ -25,7 +25,7 @@ public class OnTimeController {
 	
 	@RequestMapping(value="/login")
 	public String login() {
-		return "redirect:https://kauth.kakao.com/oauth/authorize?client_id="+kakaoKey+"&redirect_uri=http://localhost:8000/oauth&response_type=code";
+		return "redirect:https://kauth.kakao.com/oauth/authorize?client_id="+kakaoKey+"&redirect_uri=http://localhost:9000/oauth&response_type=code";
 	}
 	
 	@RequestMapping(value="/oauth")
