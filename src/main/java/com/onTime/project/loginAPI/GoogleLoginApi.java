@@ -32,7 +32,7 @@ public class GoogleLoginApi {
 	private final static String PROTECTED_RESOURCE_URL = "https://www.googleapis.com/oauth2/v3/userinfo";
 	private final static String REDIRECT_URI = "http://localhost:9000/googleCallback";
 	private final static String SESSION_STATE = "oauth_state";
-	private final static String SCOPE = "profile";
+	private final static String SCOPE = "email";
 	
 	public String getAuthorizationUrl(HttpSession session) {
         String state = generateRandomString();
@@ -75,7 +75,7 @@ public class GoogleLoginApi {
 	private OAuth20Service serviceBuilder() {
 		return new ServiceBuilder(CLIENT_ID)
                 .apiSecret(CLIENT_SECRET)
-                .defaultScope(SCOPE) // replace with desired scope
+                .defaultScope(SCOPE) // replace with desired scope "email" or "profile"
                 .callback(REDIRECT_URI)
                 .build(GoogleApi20.instance());
 	}
