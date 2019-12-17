@@ -1,4 +1,4 @@
-# Created by https://www.gitignore.io/api/eclipse
+ Created by https://www.gitignore.io/api/eclipse
 # Edit at https://www.gitignore.io/?templates=eclipse
 
 ### Eclipse ###
@@ -73,3 +73,33 @@ local.properties
 application.properties
 
 # End of https://www.gitignore.io/api/eclipse
+
+### VSC
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+### JS
+PI keys and secrets
+.env
+
+# Dependency directory
+node_modules
+bower_components
+config
+
+# Editors
+.idea
+*.iml
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+uploads
+
+**/build/**
+**/public/**

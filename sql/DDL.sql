@@ -15,17 +15,28 @@ CREATE TABLE IF NOT EXISTS lighthouse.USER (
 
 CREATE TABLE IF NOT EXISTS lighthouse.PROMISE (
 	promise_id INT PRIMARY KEY AUTO_INCREMENT,
+	promise_name VARCHAR(100) NOT NULL,
+	room_host_id VARCHAR(22) NOT NULL ,
 	place_name VARCHAR(30) NOT NULL,
 	place_x DOUBLE,
 	place_y DOUBLE,
 	promise_time DATETIME NOT NULL,
-	amount INT
+	amount INT,
+	FOREIGN KEY (room_host_id) REFERENCES lighthouse.USER(user_id)
 )DEFAULT CHARSET = UTF8;
 
-CREATE TABLE IF NOT EXISTS lighthouse.user_prom_mapping(
+CREATE TABLE IF NOT EXISTS lighthouse.user_promise(
 	id INT PRIMARY KEY AUTO_INCREMENT,
 	user_id VARCHAR(22),
 	promise_id INT,
 	FOREIGN KEY (user_id) REFERENCES lighthouse.USER(user_id),
 	FOREIGN KEY (promise_id) REFERENCES lighthouse.PROMISE(promise_id)
 )DEFAULT CHARSET = UTF8;
+
+DELIMITER //
+CREATE TRIGGER after_create_promise AFTER INSERT ON lighthouse.promise FOR EACH ROW
+BEGIN 
+INSERT INTO lighthouse.user_promise(user_id, promise_id) VALUES (new.room_host_id,new.promise_id);
+END
+//
+DELIMITER ;
