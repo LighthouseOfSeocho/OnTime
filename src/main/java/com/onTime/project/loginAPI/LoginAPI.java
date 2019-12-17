@@ -131,8 +131,5 @@ public class LoginAPI {
 
 		return userInfo;
 	}
-
-	
-	//Naver
 	
 }
