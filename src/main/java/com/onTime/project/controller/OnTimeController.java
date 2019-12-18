@@ -50,12 +50,6 @@ public class OnTimeController {
 	    return userInfo.toString();
 	}
 	
-	@GetMapping(value="/user")
-	@ResponseBody
-	public User findUserById(@RequestBody JsonReq jsonReq) {
-		return service.findUserById(jsonReq.getUserId());
-	}
-	
 	@GetMapping(value="/test")
 	@ResponseBody
 	public User findMyHostedPromise(String userId){
@@ -65,20 +59,15 @@ public class OnTimeController {
 	@GetMapping(value="/promise")
 	@ResponseBody
 	public List<Promise> getMyPromises(@RequestBody JsonReq jsonReq){
+		System.out.println(jsonReq.getUserId());
 		return service.getMyPromises(jsonReq.getUserId());
 	}
 	
 	@PostMapping(value="/promise")
 	@ResponseBody
-	public boolean createPromise(@RequestBody Promise promise) {
-//		Promise p = new Promise("술술술", "aaa", "종각", 0.0, 0.0, "2019-12-17 11:43:19", 0);
-		return service.createPromise(promise);
-	}
-	
-	@GetMapping(value="/promise/members")
-	@ResponseBody
-	public List<User> getMembers(@RequestBody JsonReq jsonReq){
-		return service.getMembers(jsonReq.getPromiseId());
+	public boolean createPromise() {
+		Promise p = new Promise("술술술", "aaa", "종각", 0.0, 0.0, "2019-12-17 11:43:19", 0);
+		return service.createPromise(p);
 	}
 	
 	@PostMapping(value="/user")
