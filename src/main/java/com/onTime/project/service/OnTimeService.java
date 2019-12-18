@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.onTime.project.model.dao.PromiseRepo;
+import com.onTime.project.model.dao.UserPromiseRepo;
 import com.onTime.project.model.dao.UserRepo;
 import com.onTime.project.model.domain.Promise;
 import com.onTime.project.model.domain.User;
+import com.onTime.project.model.domain.UserPromise;
 
 @Service
 public class OnTimeService {
@@ -18,10 +20,17 @@ public class OnTimeService {
 	public UserRepo userRepo;
 	@Autowired
 	public PromiseRepo promiseRepo;
+	@Autowired
+	public UserPromiseRepo userPromiseRepo;
 	
 	// User CRUD
-	public Optional<User> findUserById(String id) {
-		return userRepo.findById(id);
+	public User findUserById(String id) {
+		Optional<User> temp = userRepo.findById(id);
+		if(temp.isPresent()) {
+			return temp.get();
+		}else {
+			return null;
+		}
 	}
 	
 	public boolean createUser(String id, String name) {
@@ -44,13 +53,34 @@ public class OnTimeService {
 	public List<Promise> findPromisesById(String userId) {
 		return promiseRepo.findByRoomHostIdOrderByPromiseTime(userId);
 	}
-	
+	//내가 참여중인 방들
 	public List<Promise> getMyPromises(String userId){
-		try {
-			return userRepo.findById(userId).get().getPromises();
-		}catch (Exception e) {
-			return new ArrayList<Promise>(); 
+		List<Promise> promises = new ArrayList<>();
+		List<UserPromise> tempList = userPromiseRepo.findByUserId(userId);
+		if(!tempList.isEmpty()) {
+			for(UserPromise up : tempList) {
+				Optional<Promise> temp = promiseRepo.findById(up.getPromiseId());
+				if(temp.isPresent()) {
+					promises.add(temp.get());
+				}
+			}
 		}
+		return promises;
+	}
+	
+	//내가 참여중인 방들
+	public List<User> getMembers(int promiseId){
+		List<User> users = new ArrayList<>();
+		List<UserPromise> tempList = userPromiseRepo.findByPromiseId(promiseId);
+		if(!tempList.isEmpty()) {
+			for(UserPromise up : tempList) {
+				Optional<User> temp = userRepo.findById(up.getUserId());
+				if(temp.isPresent()) {
+					users.add(temp.get());
+				}
+			}
+		}
+		return users;
 	}
 	
 	public boolean createPromise(Promise promise) {
