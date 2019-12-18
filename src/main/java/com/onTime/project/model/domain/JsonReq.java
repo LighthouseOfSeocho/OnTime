@@ -6,4 +6,7 @@ import lombok.Data;
 public class JsonReq {
 	private String userId;
 	private String userName;
+	private int promiseId;
+	private String sender;
+	private String recipient;
 }

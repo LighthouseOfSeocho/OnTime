@@ -25,13 +25,25 @@ CREATE TABLE IF NOT EXISTS lighthouse.PROMISE (
 	FOREIGN KEY (room_host_id) REFERENCES lighthouse.USER(user_id)
 )DEFAULT CHARSET = UTF8;
 
-CREATE TABLE IF NOT EXISTS lighthouse.user_promise(
+CREATE TABLE IF NOT EXISTS lighthouse.USER_PROMISE(
 	id INT PRIMARY KEY AUTO_INCREMENT,
 	user_id VARCHAR(22),
 	promise_id INT,
 	FOREIGN KEY (user_id) REFERENCES lighthouse.USER(user_id),
 	FOREIGN KEY (promise_id) REFERENCES lighthouse.PROMISE(promise_id)
 )DEFAULT CHARSET = UTF8;
+
+CREATE TABLE IF NOT EXISTS lighthouse.INVITATION (
+	sender VARCHAR(22) NOT NULL,
+	recipient VARCHAR(22) NOT NULL,
+	promise_id INT NOT NULL,
+	invite_time DATETIME NOT NULL,
+	FOREIGN KEY (sender) REFERENCES lighthouse.USER(user_id),
+	FOREIGN KEY (recipient) REFERENCES lighthouse.USER(user_id),
+	FOREIGN KEY (promise_id) REFERENCES lighthouse.PROMISE(promise_id),
+	PRIMARY KEY (sender, recipient, promise_id)
+)DEFAULT CHARSET = UTF8;
+
 
 DELIMITER //
 CREATE TRIGGER after_create_promise AFTER INSERT ON lighthouse.promise FOR EACH ROW

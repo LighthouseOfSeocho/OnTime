@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.onTime.project.loginAPI.LoginAPI;
+import com.onTime.project.model.domain.Invitation;
 import com.onTime.project.model.domain.JsonReq;
 import com.onTime.project.model.domain.Promise;
 import com.onTime.project.model.domain.User;
@@ -50,6 +51,34 @@ public class OnTimeController {
 	    return userInfo.toString();
 	}
 	
+	@GetMapping(value="/user")
+	@ResponseBody
+	public User findUserById(@RequestBody JsonReq jsonReq) {
+		return service.findUserById(jsonReq.getUserId());
+	}
+	
+	@PostMapping(value="/user")
+	@ResponseBody
+	public boolean createUser(@RequestBody JsonReq jsonReq) {
+		return service.createUser(jsonReq.getUserId(), jsonReq.getUserName());
+	}
+	
+	@GetMapping(value="/user/invitation")
+	@ResponseBody
+	public List<Promise> getMyInvitation(@RequestBody JsonReq jsonReq) {
+		return service.getInvitedPromises(jsonReq.getUserId());
+	}
+	
+	@PostMapping(value="/promise/invitation")
+	@ResponseBody
+	public boolean invite(@RequestBody Invitation invitation) {
+		try {
+			return service.invite(invitation);
+		}catch (Exception e) {
+			return false;
+		}
+	}
+	
 	@GetMapping(value="/test")
 	@ResponseBody
 	public User findMyHostedPromise(String userId){
@@ -59,20 +88,21 @@ public class OnTimeController {
 	@GetMapping(value="/promise")
 	@ResponseBody
 	public List<Promise> getMyPromises(@RequestBody JsonReq jsonReq){
-		System.out.println(jsonReq.getUserId());
 		return service.getMyPromises(jsonReq.getUserId());
 	}
 	
 	@PostMapping(value="/promise")
 	@ResponseBody
-	public boolean createPromise() {
-		Promise p = new Promise("술술술", "aaa", "종각", 0.0, 0.0, "2019-12-17 11:43:19", 0);
-		return service.createPromise(p);
+	public boolean createPromise(@RequestBody Promise promise) {
+//		Promise p = new Promise("술술술", "aaa", "종각", 0.0, 0.0, "2019-12-17 11:43:19", 0);
+		return service.createPromise(promise);
 	}
 	
-	@PostMapping(value="/user")
+	@GetMapping(value="/promise/members")
 	@ResponseBody
-	public boolean createUser(@RequestBody JsonReq jsonReq) {
-		return service.createUser(jsonReq.getUserId(), jsonReq.getUserName());
+	public List<User> getMembers(@RequestBody JsonReq jsonReq){
+		return service.getMembers(jsonReq.getPromiseId());
 	}
+	
+	
 }
