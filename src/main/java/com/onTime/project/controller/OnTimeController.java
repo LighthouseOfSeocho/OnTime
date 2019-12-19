@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.onTime.project.loginAPI.LoginAPI;
 import com.onTime.project.model.domain.Invitation;
@@ -21,8 +22,8 @@ import com.onTime.project.model.domain.Promise;
 import com.onTime.project.model.domain.User;
 import com.onTime.project.service.OnTimeService;
 
-@CrossOrigin(origins = "http://localhost:9000")
-@Controller
+@CrossOrigin(origins = "localhost:8080")
+@RestController
 public class OnTimeController {
 	@Value("${kakao.key}")
 	private String kakaoKey;
@@ -79,16 +80,16 @@ public class OnTimeController {
 		}
 	}
 	
-	@GetMapping(value="/test")
-	@ResponseBody
-	public User findMyHostedPromise(String userId){
-		return service.test();
+	@PostMapping(value="/test")
+	public String findMyHostedPromise(@RequestBody JsonReq jsonReq){
+		System.out.println(jsonReq);
+		return jsonReq.getUserId();
 	}
 	
 	@GetMapping(value="/promise")
 	@ResponseBody
-	public List<Promise> getMyPromises(@RequestBody JsonReq jsonReq){
-		return service.getMyPromises(jsonReq.getUserId());
+	public List<Promise> getMyPromises(@RequestParam String userId){
+		return service.getMyPromises(userId);
 	}
 	
 	@PostMapping(value="/promise")
