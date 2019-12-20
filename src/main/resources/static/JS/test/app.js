@@ -5,3 +5,6 @@ new Vue({
         categories : ["Personal", "Business"]
     }
 });
+new Vue({
+    el : "#head"
+});
