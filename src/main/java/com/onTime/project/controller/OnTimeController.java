@@ -32,7 +32,6 @@ import com.onTime.project.loginAPI.NaverLoginApi;
 
 @CrossOrigin(origins = "http://localhost:9000")
 @Controller
-
 public class OnTimeController {
 	@Value("${kakao.key}")
 	private String kakaoKey;
@@ -45,11 +44,6 @@ public class OnTimeController {
 	private GoogleLoginApi googleLoginApi;
 
 	/* Kakao Login */
-	@RequestMapping(value = "/login")
-	public String login() {
-		return "redirect:" + kakaoLoginApi.getAuthUrl();
-	}
-
 	@RequestMapping(value = "/oauth")
 	@ResponseBody
 	public String getUserInfo(@RequestParam("code") String code) {
