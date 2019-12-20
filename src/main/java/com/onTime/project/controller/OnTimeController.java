@@ -1,21 +1,29 @@
 package com.onTime.project.controller;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.reactive.result.view.RedirectView;
 
 import com.onTime.project.loginAPI.LoginAPI;
+import com.onTime.project.model.domain.Invitation;
+import com.onTime.project.model.domain.JsonReq;
+import com.onTime.project.model.domain.Promise;
+import com.onTime.project.model.domain.User;
+import com.onTime.project.service.OnTimeService;
 
-@CrossOrigin(origins = "http://localhost:8000")
-@Controller
+@CrossOrigin(origins = "localhost:8080")
+@RestController
 public class OnTimeController {
 	@Value("${kakao.key}")
 	private String kakaoKey;
@@ -23,9 +31,12 @@ public class OnTimeController {
 	@Autowired
 	public LoginAPI loginAPI;
 	
+	@Autowired
+	public OnTimeService service;
+	
 	@RequestMapping(value="/login")
 	public String login() {
-		return "redirect:https://kauth.kakao.com/oauth/authorize?client_id="+kakaoKey+"&redirect_uri=http://localhost:8000/oauth&response_type=code";
+		return "redirect:https://kauth.kakao.com/oauth/authorize?client_id="+kakaoKey+"&redirect_uri=http://localhost:9000/oauth&response_type=code";
 	}
 	
 	@RequestMapping(value="/oauth")
@@ -40,4 +51,59 @@ public class OnTimeController {
 	    }
 	    return userInfo.toString();
 	}
+	
+	@GetMapping(value="/user")
+	@ResponseBody
+	public User findUserById(@RequestBody JsonReq jsonReq) {
+		return service.findUserById(jsonReq.getUserId());
+	}
+	
+	@PostMapping(value="/user")
+	@ResponseBody
+	public boolean createUser(@RequestBody JsonReq jsonReq) {
+		return service.createUser(jsonReq.getUserId(), jsonReq.getUserName());
+	}
+	
+	@GetMapping(value="/user/invitation")
+	@ResponseBody
+	public List<Promise> getMyInvitation(@RequestBody JsonReq jsonReq) {
+		return service.getInvitedPromises(jsonReq.getUserId());
+	}
+	
+	@PostMapping(value="/promise/invitation")
+	@ResponseBody
+	public boolean invite(@RequestBody Invitation invitation) {
+		try {
+			return service.invite(invitation);
+		}catch (Exception e) {
+			return false;
+		}
+	}
+	
+	@PostMapping(value="/test")
+	public String findMyHostedPromise(@RequestBody JsonReq jsonReq){
+		System.out.println(jsonReq);
+		return jsonReq.getUserId();
+	}
+	
+	@GetMapping(value="/promise")
+	@ResponseBody
+	public List<Promise> getMyPromises(@RequestParam String userId){
+		return service.getMyPromises(userId);
+	}
+	
+	@PostMapping(value="/promise")
+	@ResponseBody
+	public boolean createPromise(@RequestBody Promise promise) {
+//		Promise p = new Promise("술술술", "aaa", "종각", 0.0, 0.0, "2019-12-17 11:43:19", 0);
+		return service.createPromise(promise);
+	}
+	
+	@GetMapping(value="/promise/members")
+	@ResponseBody
+	public List<User> getMembers(@RequestBody JsonReq jsonReq){
+		return service.getMembers(jsonReq.getPromiseId());
+	}
+	
+	
 }
