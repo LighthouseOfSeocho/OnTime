@@ -3,6 +3,7 @@ package com.onTime.project.chat.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -31,25 +32,27 @@ public class ChatController {
 
     private static final Logger log = LoggerFactory.getLogger(ChatController.class);
 
+    @Autowired
     private final RoomService roomService;
+    @Autowired
     private final SimpMessageSendingOperations messagingTemplate;
-
+    
     public ChatController(RoomService roomService, SimpMessageSendingOperations messagingTemplate) {
         this.roomService = roomService;
         this.messagingTemplate = messagingTemplate;
     }
-
+    
     @SubscribeMapping("/chat/roomList")
     public List<SimpleRoomDto> roomList() {
         return roomService.roomList();
     }
-
+    
     @MessageMapping("/chat/addRoom")
     @SendTo("/chat/newRoom")
     public SimpleRoomDto addRoom(NewRoomDto newRoom) {
         return roomService.addRoom(newRoom.roomName);
     }
-
+    
     @MessageMapping("/chat/{roomId}/join")
     public ChatRoomUserListDto userJoinRoom(UserRoomKeyDto userRoomKey, SimpMessageHeaderAccessor headerAccessor) {
 //        with enabled spring security
@@ -67,7 +70,7 @@ public class ChatController {
                     return new ChatRoomUserListDto(userRoomKey.roomKey, HashSet.empty());
                 });
     }
-
+    
     @MessageMapping("/chat/{roomId}/leave")
     public ChatRoomUserListDto userLeaveRoom(UserRoomKeyDto userRoomKey, SimpMessageHeaderAccessor headerAccessor) {
         final Message leaveMessage = new Message(MessageTypes.LEAVE, userRoomKey.userName, "");
@@ -82,13 +85,13 @@ public class ChatController {
                     return new ChatRoomUserListDto(userRoomKey.roomKey, HashSet.empty());
                 });
     }
-
+    
     @MessageMapping("chat/{roomId}/sendMessage")
     public Message sendMessage(@DestinationVariable String roomId, Message message) {
         messagingTemplate.convertAndSend(format("/chat/%s/messages", roomId), message);
         return message;
     }
-
+    
     public void handleUserDisconnection(String userName) {
         final User user = new User(userName);
         final Message leaveMessage = new Message(MessageTypes.LEAVE, userName, "");
@@ -100,5 +103,5 @@ public class ChatController {
                     sendMessage(roomUserList.roomKey, leaveMessage);
                 });
     }
-
+    
 }
