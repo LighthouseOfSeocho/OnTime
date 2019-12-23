@@ -7,16 +7,18 @@ new Vue({
             title: null,
             regDate: null
         },
-        memos: []
+        memos: [],
+        category : "Personal",
+        categories : ["Personal", "Business"]
     },
     methods: { // methods 객체
         renew: function(val) {
             return JSON.parse(JSON.stringify(val)); // JSON.stringify()는 값을 JSON 표기법으로 변환
         },
 
-        open: function(id) {
+        open: function(title) {
             for(var i in this.memos) { // id를 가진 memos 찾기
-                if(this.memos[i].id === id) { // id가 같은 memos 찾기
+                if(this.memos[i].title === title) { // id가 같은 memos 찾기
                     this.memo = this.renew(this.memos[i]); // 자바 스크립트에서 = 의 의미는 객체 일때 단순히 내용을 넣어주는것 뿐만 아니라 참조값으로 들어간다 
                     break; //그래서 renew로 값만 들어가게 변환해야 한다
                 }

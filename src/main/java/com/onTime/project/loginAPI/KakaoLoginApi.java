@@ -1,4 +1,4 @@
-package com.onTime.project.loginAPI;
+package com.onTime.project.loginApi;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
