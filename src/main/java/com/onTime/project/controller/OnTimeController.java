@@ -1,6 +1,7 @@
 package com.onTime.project.controller;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import javax.servlet.http.HttpSession;
@@ -18,17 +19,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.onTime.project.loginAPI.LoginAPI;
+import com.google.gson.JsonObject;
+import com.onTime.project.loginApi.GoogleLoginApi;
+import com.onTime.project.loginApi.KakaoLoginApi;
+import com.onTime.project.loginApi.NaverLoginApi;
 import com.onTime.project.model.domain.Invitation;
 import com.onTime.project.model.domain.JsonReq;
 import com.onTime.project.model.domain.Promise;
 import com.onTime.project.model.domain.User;
 import com.onTime.project.service.OnTimeService;
-
-import com.google.gson.JsonObject;
-import com.onTime.project.loginAPI.GoogleLoginApi;
-import com.onTime.project.loginAPI.KakaoLoginApi;
-import com.onTime.project.loginAPI.NaverLoginApi;
 
 @CrossOrigin(origins = "http://localhost:9000")
 @Controller
@@ -43,6 +42,8 @@ public class OnTimeController {
 	private NaverLoginApi naverLoginApi;
 	@Autowired
 	private GoogleLoginApi googleLoginApi;
+	@Autowired
+	private OnTimeService service;
 
 	/* Kakao Login */
 	@RequestMapping(value = "/login")
