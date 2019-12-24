@@ -27,6 +27,8 @@ import com.onTime.project.model.domain.Invitation;
 import com.onTime.project.model.domain.JsonReq;
 import com.onTime.project.model.domain.Promise;
 import com.onTime.project.model.domain.User;
+import com.onTime.project.model.es.Meeting;
+import com.onTime.project.model.es.WedulPlayService;
 import com.onTime.project.service.OnTimeService;
 
 @CrossOrigin(origins = "http://localhost:9000")
@@ -44,6 +46,9 @@ public class OnTimeController {
 	private GoogleLoginApi googleLoginApi;
 	@Autowired
 	private OnTimeService service;
+	
+	@Autowired
+	private WedulPlayService esService;
 
 	/* Kakao Login */
 	@RequestMapping(value = "/login")
@@ -135,6 +140,21 @@ public class OnTimeController {
 	@ResponseBody
 	public List<User> getMembers(@RequestBody JsonReq jsonReq){
 		return service.getMembers(jsonReq.getPromiseId());
+	}
+	
+	@GetMapping(value="/testt")
+	@ResponseBody
+	public String esTest(){
+		Meeting example = new Meeting();
+		example.setId("nsk");
+		example.setTitle("XMAS");
+		example.setUser("Seyoung");
+		example.setStartAt(20191224);
+		example.setEndAt(20191225);
+		System.out.println(example);
+		esService.save(example);
+		
+		return "성공";
 	}
 	
 	
