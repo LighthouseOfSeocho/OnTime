@@ -1,7 +1,6 @@
 package com.onTime.project.controller;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -10,6 +9,9 @@ import javax.servlet.http.HttpSession;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.google.gson.JsonObject;
 import com.onTime.project.loginApi.GoogleLoginApi;
 import com.onTime.project.loginApi.KakaoLoginApi;
 import com.onTime.project.loginApi.NaverLoginApi;
@@ -53,11 +54,24 @@ public class OnTimeController {
 
 	@RequestMapping(value = "/oauth")
 	@ResponseBody
-	public ModelAndView getUserInfo(@RequestParam("code") String code, ModelAndView model) {
+	public void getUserInfo(@RequestParam("code") String code, ModelAndView model) {
 //		System.out.println(((JsonObject) kakaoLoginApi.getUserInfo(kakaoLoginApi.getAccessKakaoToken(code))).toString()); // {"id":"1243182388","nickname":"한우석"}
-		model.addObject("PI",((JsonObject) kakaoLoginApi.getUserInfo(kakaoLoginApi.getAccessKakaoToken(code))).toString());
-		model.setViewName("afterlogin");
-		return model;
+		JSONObject kakaoUser = ((JSONObject) kakaoLoginApi.getUserInfo(kakaoLoginApi.getAccessKakaoToken(code)));
+		System.out.println("test1\n");
+		boolean flag = service.createUser(kakaoUser.get("id").toString(), kakaoUser.get("nickname").toString());
+		System.out.println("test2\n");
+		if(flag == true) {
+			System.out.println("test3\n");
+			model.addObject("PI",kakaoUser);
+			model.setViewName("app");
+			System.out.println("test4\n");
+		}else {
+			System.out.println("test5\n");
+			model.setViewName("index.html");
+		}
+		System.out.println("test7\n");
+		System.out.println(model);
+//		return model;
 	}
 	
 	/* Naver Login */
@@ -74,10 +88,9 @@ public class OnTimeController {
 //		System.out.println(((JSONObject) naverLoginApi.getUserProfile(naverLoginApi.getAccessToken(session, code, state))).getClass()); // class org.json.simple.JSONObject
 //		System.out.println(((JSONObject) naverLoginApi.getUserProfile(naverLoginApi.getAccessToken(session, code, state))));
 // {"birthday":"01-08","profile_image":"https:\/\/ssl.pstatic.net\/static\/pwe\/address\/img_profile.png","gender":"M","nickname":"hanwo","name":"한우석","id":"34508534","age":"20-29","email":"gazzari@hanmail.net"}
-		JSONObject User = ((JSONObject) naverLoginApi.getUserProfile(naverLoginApi.getAccessToken(session, code, state)));
-		model.addObject("PI",((JSONObject) naverLoginApi.getUserProfile(naverLoginApi.getAccessToken(session, code, state)))
-				.toString());
-		model.setViewName("afterlogin");
+		JSONObject naverUser = ((JSONObject) naverLoginApi.getUserProfile(naverLoginApi.getAccessToken(session, code, state)));
+		model.addObject("PI",naverUser);
+		model.setViewName("app");
 		return model;
 	}
 	// return값을 JSONObject에 저장해놓고 유저 id를 세션으로 저장 - 추후 로그아웃 구현시 사용
@@ -92,12 +105,15 @@ public class OnTimeController {
 
 	@RequestMapping(value = "/googleCallback")
 	@ResponseBody
-	public String callbackGoogle(@RequestParam String code, @RequestParam String state, HttpSession session)
+	public ModelAndView callbackGoogle(@RequestParam String code, @RequestParam String state, HttpSession session, ModelAndView model)
 			throws IOException, ParseException, InterruptedException, ExecutionException {
-		System.out.println(((JSONObject) googleLoginApi.getUserProfile(googleLoginApi.getAccessToken(session, code, state))).toString()); 
-		// {"birthday":"01-08","profile_image":"https:\/\/ssl.pstatic.net\/static\/pwe\/address\/img_profile.png","gender":"M","nickname":"hanwo","name":"한우석","id":"34508534","age":"20-29","email":"gazzari@hanmail.net"}
-		return ((JSONObject) googleLoginApi.getUserProfile(googleLoginApi.getAccessToken(session, code, state)))
-				.toString();
+//		System.out.println(((JSONObject) googleLoginApi.getUserProfile(googleLoginApi.getAccessToken(session, code, state))).toString());
+// email : {"sub":"106490326651663334165","email_verified":true,"picture":"https:\/\/lh3.googleusercontent.com\/a-\/AAuE7mA_yoNKgoEfzvS9vauvZedDndxiiZ8uww_x4yPUTw","email":"hanwo2052@gmail.com"}
+// profile : {"sub":"106490326651663334165","name":"han wop","given_name":"han","locale":"ko","family_name":"wop","picture":"https:\/\/lh3.googleusercontent.com\/a-\/AAuE7mA_yoNKgoEfzvS9vauvZedDndxiiZ8uww_x4yPUTw"}
+		JSONObject googleUSer = ((JSONObject) googleLoginApi.getUserProfile(googleLoginApi.getAccessToken(session, code, state)));
+		model.addObject("PI", googleUSer);
+		model.setViewName("redirect : app.html");
+		return model;
 	}
 
 	@GetMapping(value = "/user")

@@ -8,6 +8,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -122,9 +123,10 @@ public class KakaoLoginApi {
 //    }
 
 
-	public JsonObject getUserInfo(String access_Token) {
+	public JSONObject getUserInfo(String access_Token) {
 		// 요청하는 클라이언트마다 가진 정보가 다를 수 있기에 HashMap타입으로 선언
-		JsonObject userInfo = new JsonObject();
+		JSONObject userInfo = new JSONObject();
+
 		String reqURL = "https://kapi.kakao.com/v2/user/me";
 		try {
 			URL url = new URL(reqURL);
@@ -145,24 +147,16 @@ public class KakaoLoginApi {
 			JsonObject kakao_account = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
 			String nickname = properties.getAsJsonObject().get("nickname").getAsString();
 			String email = kakao_account.getAsJsonObject().get("email").getAsString();
-//			String gender = kakao_account.getAsJsonObject().get("gender").getAsString();
-//			String age = kakao_account.getAsJsonObject().get("age").getAsString();
-//			String bday = kakao_account.getAsJsonObject().get("bday").getAsString();
-			System.out.println(properties + "11111111111" + nickname + email);
-//			String gender = null;
-//			if(kakao_account.getAsJsonObject().get("has_gender").getAsBoolean()) {
-//				gender = kakao_account.getAsJsonObject().get("gender").getAsString();				
-//			}
-			userInfo.addProperty("id", id);
-			userInfo.addProperty("nickname", nickname);
-			userInfo.addProperty("email", email);
+
+			userInfo.put("id", id);
+			userInfo.put("nickname", nickname);
+			userInfo.put("email", email);
 //			userInfo.addProperty("gender", gender);
-//			userInfo.addProperty("age", age);
+//			userInfo.put("age", age);
 //			userInfo.addProperty("bday", bday);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		return userInfo;
 	}
 	

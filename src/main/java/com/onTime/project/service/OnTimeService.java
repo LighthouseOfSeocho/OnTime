@@ -40,18 +40,21 @@ public class OnTimeService {
 		}
 	}
 	
-	public boolean createUser(String id, String name) {
-		try {
-			userRepo.findById(id).get();
-			return false;
-		} catch (Exception e) {
-			try {
-				userRepo.save(new User(id,name));
-				return true;
-			} catch (Exception e2) {
-				return false;
-			}
-		}
+	public boolean createUser(String userId, String userName) {
+		boolean flag = false;
+		System.out.println("11111111");
+		List<User> list = userRepo.findUserByuserIdEquals(userId);
+		System.out.println("2222222222");
+        if (list.size() == 0) {
+        	System.out.println("333333333");
+        	userRepo.save(new User(userId,userName));
+        	System.out.println("44444444444");
+        	flag = true;
+        	System.out.println("6666666666666");
+        } else {
+        	return flag;
+        }
+        return flag;
 	}
 	
 	

@@ -9,9 +9,10 @@
 </head>
 <body>
     Hello world<br>
-    <h2>Hello! ㅇㅇㅇ의 개인정보</h2>
-    <span th:text="${PI.id}"></span>
+    <h2>Hello! 우석이의 개인정보</h2>
+    <span th:text="${PI}"></span>
     <br><hr><br>
+    <span th:each="test:${PI}" th:text="${test}"></span>
     <!-- <br><hr><br>
     <span th:text="${PI.birthday}">${PI}</span>
     <br><hr><br>

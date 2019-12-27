@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <link href="app.css" rel="stylesheet" />
+    <link href="JS/test4/app.css" rel="stylesheet" />
     <title>가즈아앙~</title>
 </head>
 
@@ -21,7 +21,7 @@
         <div class="body" v-if="category === 'Personal'">
             <div class="list" v-if="mode === 'list'">
                 <ul>
-                    <li th:text="${PI.id}" v-for="m in Pmemos" @click = "Popen(m.title)">{{ m.title }}</li>
+                    <li v-for="m in Pmemos" @click = "Popen(m.title)">{{ m.title }}</li>
                 </ul>
             </div>
             <div class="write" v-else> <!-- 상세내용 표기 -->
@@ -46,9 +46,8 @@
             <button class="add-btn" type="button" @click="Bwrite()" v-if="mode === 'list'"> + </button>
         </div> 
     </div>
-    <button onclick="location.href='../test.html'">눌러봐</button>
 
-    <script src="app.js"></script>
+    <script src="JS/test4/app.js"></script>
 </body>
 <script th:inline="javascript">
     /*<![CDATA[*/
