@@ -135,7 +135,6 @@ public class OnTimeController {
 	@PostMapping(value="/promise")
 	@ResponseBody
 	public Promise createPromise(@RequestBody Promise promise) {
-//		Promise p = new Promise("술술술", "aaa", "종각", 0.0, 0.0, "2019-12-17 11:43:19", 0);
 		return service.createPromise(promise);
 	}
 	
@@ -145,47 +144,40 @@ public class OnTimeController {
 		return service.getMembers(jsonReq.getPromiseId());
 	}
 	
-	@GetMapping(value="/memo1")
-	@ResponseBody
-	public String esTest1(){
-		Memo example = new Memo();
-		example.setMemoId(2233);
-		example.setPromiseId(1);
-		example.setNote("오늘 미팅은 즐거웠다. 식당 밥맛 없고, 서비스 엉망이었다. 업체 사장님 딸 생일은 5월 15일 이란다.");
-		esService.save(example);
-		
-		return "memo1 성공";
-	}
+	// test data1: Memo(promiseId=8, user="nsy", note="서초역 제주도그릴 강추. 주변에 커피 마실 곳이 없음. 업체 사장님 딸 생일은 5월 15일, 사장님 딸 올해 고3.")
+	// test data1: Memo(promiseId=11, user="nsy", note="문부장님 부대찌개 별로 안좋아하셨음. 내년 1월초에 부서별 사업계획 확정, 내년 2월말에 계약 가능성 내비침.")
+	// test data1: Memo(promiseId=12, user="nsy", note="소주 마시고 싶을 때 오기 좋은 곳, 대표메뉴 마늘닭똥집. 주말에 사람 많아서 예약 필수. 영동이 첫째 내년 4월 출산 예정")
 	
-	@GetMapping(value="/memo2")
+	@GetMapping(value="/createMemo")
 	@ResponseBody
-	public String esTest2(){
-		Memo example = new Memo();
-		example.setMemoId(3324);
-		example.setPromiseId(2);
-		example.setNote("교대역 마라공방에서 식사. 가성비 떨어짐. 다음 모임은 7월 25일 경으로 약속.");
-		esService.save(example);
-		
-		return "memo2 성공";
-	}
-	
-	@GetMapping(value="/memo3")
-	@ResponseBody
-	public String esTest3(){
-		Memo example = new Memo();
-		example.setMemoId(4412);
-		example.setPromiseId(3);
-		example.setNote("서초역 제주도그릴 강추. 주변에 커피 마실 곳이 없음. 큰 대로로 나오면 커피빈 있음.");
-		esService.save(example);
-		
-		return "memo2 성공";
+	public String createMemo(@RequestParam("promiseId") int promiseId, @RequestParam("user") String user, String note) {
+		String result;
+		Memo instance = new Memo();
+		instance.setPromiseId(promiseId);
+		instance.setUser(user);
+		instance.setNote(note);
+		try {
+			esService.save(instance);
+			result = "메모 저장 성공";
+		} catch (Exception e) {
+			result = "메모 저장 실패";
+		}
+		return result; 
 	}
 	
 	@GetMapping(value="/searchKwd")
 	@ResponseBody
-	public List<Memo> searchKwd(@RequestParam("kwd") String kwd){
-		return esService.findByKwd(kwd);
+	public String searchKwd(@RequestParam("kwd") String kwd){
+		String result;
+		try {
+			result = esService.findByKwd(kwd).toString();
+		} catch (Exception e) {
+			result = "키워드 조회 실패";
+		}
+		return result;
 	}
+	
+	
 	
 	
 }

@@ -1,5 +1,7 @@
 package com.onTime.project.model.es;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,8 @@ public class MemoService {
 	private MemoRepository memoRepository;
 
 	public void save(Memo example) {
-		memoRepository.save(example);
+		Memo n = memoRepository.save(example);
+		System.out.println(n);
 	}
 
 	public Iterable<Memo> findAll() {
@@ -31,7 +34,12 @@ public class MemoService {
 	}
 	
 	public List<Memo> findByKwd(String kwd) {
-		return memoRepository.findByNoteContaining(kwd);
+		List<Memo> list = new ArrayList<>();
+		List<Memo> result = memoRepository.findByNoteContaining(kwd);
+		for(Memo unit : result) {
+			list.add(unit);
+		}
+		return list;
 	}
 
 }
