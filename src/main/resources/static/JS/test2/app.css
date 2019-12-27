@@ -1,5 +1,5 @@
 .app > .head {
-    padding: 10px;
+    padding: 20px;
     background: lightskyblue;
     border-bottom: 1px solid #ddd;
     text-align: center;
@@ -12,27 +12,13 @@
     font-weight: bold;
 }
 
-.app > .head button {
-    background: gold;
-    border: 1px solid black;
-    padding: 7px;
-    cursor: pointer;
-    width: 45%;
-    margin: 7px;
-}
-
-.app > .head button.active {
-    background: cadetblue;
-    color :white;
-}
-
 .app > .head .list-btn { 
     position: absolute;
     left: 0;
     top: 0;
     font-size: 21px;
     color: black;
-    padding: 22px;
+    padding: 30px;
     line-height: 0;
 }
 
