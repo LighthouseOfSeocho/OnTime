@@ -31,4 +31,19 @@ public class Invitation {
 		this.promiseId = promiseId;
 		this.inviteTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(System.currentTimeMillis()));
 	}
+
+	public String getRecipient() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Integer getPromiseId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setInviteTime(String format) {
+		// TODO Auto-generated method stub
+		
+	}
 }
