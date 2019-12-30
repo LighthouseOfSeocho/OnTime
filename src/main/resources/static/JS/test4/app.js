@@ -1,4 +1,3 @@
-
 new Vue({
     el: "#app",
     data: { // data 객체
@@ -137,7 +136,16 @@ new Vue({
         },
         printInfo: function(query){
             this.createPromise.roomHostId=query.id;
-            console.log(this.createPromise)
+            axios.post('/promise', this.createPromise)
+                .then(res=>{
+                    if(res.data){
+                        alert('약속이 생성되었습니다.')
+                    }else{
+                        alert('오류 발생')
+                    }
+                }).catch(e=>{
+                    alert(e)
+                })
         }
     },
 

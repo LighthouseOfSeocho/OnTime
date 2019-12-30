@@ -31,16 +31,16 @@ public class Promise {
 	@Column(name="place_y")
 	private Double placeY;
 	private String promiseTime;
-	private int amount;
+	private String invitation;
 	
 	public Promise(String promiseName, String roomHostId, String placeName, Double placeX, 
-			Double placeY, String promiseTime, int amount){
+			Double placeY, String promiseTime, String invitation){
 		this.promiseName=promiseName;
 		this.roomHostId=roomHostId;
 		this.placeName=placeName;
 		this.placeX=placeX;
 		this.placeY=placeY;
 		this.promiseTime=promiseTime;
-		this.amount=amount;
+		this.invitation=invitation;
 	}
 }

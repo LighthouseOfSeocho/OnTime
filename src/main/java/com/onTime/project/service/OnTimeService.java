@@ -1,5 +1,7 @@
 package com.onTime.project.service;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -106,6 +108,19 @@ public class OnTimeService {
 		return promises;
 	}
 	
+	public String sha256(String promiseId) throws NoSuchAlgorithmException {
+		String sha = "";
+		MessageDigest md = MessageDigest.getInstance("SHA-256");
+		md.update(promiseId.getBytes());
+		byte byteData[] = md.digest();
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < byteData.length; i++) {
+            sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
+        }
+        sha = sb.toString();
+        return sha;
+	}
+	
 	//방에 참여중인 멤버
 	public List<User> getMembers(int promiseId){
 		List<User> users = new ArrayList<>();
@@ -123,6 +138,9 @@ public class OnTimeService {
 	
 	public boolean createPromise(Promise promise) {
 		try {
+			promiseRepo.save(promise);
+			System.out.println(promise.getPromiseId());
+			promise.setInvitation(sha256(promise.getPromiseId()+""));
 			promiseRepo.save(promise);
 			return true;
 		}catch (Exception e) {
