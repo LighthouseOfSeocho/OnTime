@@ -22,6 +22,7 @@
             <div class="list" v-if="mode === 'list'">
                 <ul>
                     <li th:text="${PI.id}" v-for="m in Pmemos" @click = "Popen(m.title)">{{ m.title }}</li>
+                    <li v-for="m in Pmemos" @click = "Popen(m.title)">{{ m.title }}</li>
                 </ul>
             </div>
             <div class="write" v-else> <!-- 상세내용 표기 -->
@@ -56,5 +57,7 @@
     console.log(query) // object
     /*]]>*/
 </script>
+    <script src="app.js"></script>
+</body>
 
 </html>
