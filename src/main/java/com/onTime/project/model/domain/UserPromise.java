@@ -24,4 +24,14 @@ public class UserPromise {
 		this.userId = userId;
 		this.promiseId = promiseId;
 	}
+
+	public Integer getPromiseId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getUserId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

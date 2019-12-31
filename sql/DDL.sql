@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS lighthouse.PROMISE (
 	place_x DOUBLE,
 	place_y DOUBLE,
 	promise_time DATETIME NOT NULL,
-	amount INT,
+	invitation VARCHAR(255) UNIQUE,
 	FOREIGN KEY (room_host_id) REFERENCES lighthouse.USER(user_id)
 )DEFAULT CHARSET = UTF8;
 

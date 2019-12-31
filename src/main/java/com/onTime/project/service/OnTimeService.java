@@ -1,5 +1,7 @@
 package com.onTime.project.service;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -40,18 +42,22 @@ public class OnTimeService {
 		}
 	}
 	
-	public boolean createUser(String id, String name) {
-		try {
-			userRepo.findById(id).get();
-			return false;
-		} catch (Exception e) {
-			try {
-				userRepo.save(new User(id,name));
-				return true;
-			} catch (Exception e2) {
-				return false;
-			}
-		}
+	public boolean createUser(String userId, String userName) {
+		boolean flag = false;
+		System.out.println("11111111");
+		List<User> list = userRepo.findUserByuserIdEquals(userId);
+		System.out.println("2222222222");
+		System.out.println(list);
+        if (list.size() == 0) {
+        	System.out.println("333333333");
+        	userRepo.save(new User(userId,userName));
+        	System.out.println("44444444444");
+        	flag = true;
+        	System.out.println("6666666666666");
+        } else {
+        	return flag;
+        }
+        return flag;
 	}
 	
 	
@@ -102,6 +108,19 @@ public class OnTimeService {
 		return promises;
 	}
 	
+	public String sha256(String promiseId) throws NoSuchAlgorithmException {
+		String sha = "";
+		MessageDigest md = MessageDigest.getInstance("SHA-256");
+		md.update(promiseId.getBytes());
+		byte byteData[] = md.digest();
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < byteData.length; i++) {
+            sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
+        }
+        sha = sb.toString();
+        return sha;
+	}
+	
 	//방에 참여중인 멤버
 	public List<User> getMembers(int promiseId){
 		List<User> users = new ArrayList<>();
@@ -119,6 +138,9 @@ public class OnTimeService {
 	
 	public boolean createPromise(Promise promise) {
 		try {
+			promiseRepo.save(promise);
+			System.out.println(promise.getPromiseId());
+			promise.setInvitation(sha256(promise.getPromiseId()+""));
 			promiseRepo.save(promise);
 			return true;
 		}catch (Exception e) {

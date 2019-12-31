@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name="USER")
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+//@NoArgsConstructor
+//@AllArgsConstructor
 public class User {
 	@Id
 	@JsonProperty(value = "id")
@@ -27,8 +27,16 @@ public class User {
 	private String userBirthday;
 	private String userPhone;
 	
-	public User(String userId, String userName) {
+	public User() {}
+	
+	public User(String userId, String userName, String userEmail) {
 		this.userId = userId;
 		this.userName = userName;
+		this.userEmail = userEmail;
 	}
+
+	public User(String string, String string2) {
+		// TODO Auto-generated constructor stub
+	}
+	
 }
