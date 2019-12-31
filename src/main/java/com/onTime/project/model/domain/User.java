@@ -29,10 +29,9 @@ public class User {
 	
 	public User() {}
 	
-	public User(String userId, String userName, String userEmail) {
+	public User(String userId, String userName) {
 		this.userId = userId;
 		this.userName = userName;
-		this.userEmail = userEmail;
 	}
 
 	public User(String string, String string2) {

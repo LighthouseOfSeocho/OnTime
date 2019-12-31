@@ -25,6 +25,7 @@ public class OnTimeApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(OnTimeApplication.class, args);
 	}
+	
 	@Bean
 	public ObjectMapper jacksonBuilder() {
 		ObjectMapper mapper = new ObjectMapper();

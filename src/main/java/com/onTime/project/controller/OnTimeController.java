@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import com.google.gson.JsonObject;
+
 import com.onTime.project.loginApi.GoogleLoginApi;
 import com.onTime.project.loginApi.KakaoLoginApi;
 import com.onTime.project.loginApi.NaverLoginApi;
@@ -53,6 +54,9 @@ public class OnTimeController {
 	@Autowired
 	private MemoService esService;
 	
+
+	@Autowired
+	private OnTimeService service;
 
 	@Autowired
 	private OnTimeService service;
@@ -169,7 +173,6 @@ public class OnTimeController {
 		return service.getMyPromises(userId);
 	}
 
-	@PostMapping(value = "/promise")
 //	Promise dummyData = new Promise(1111, "거래처A 점심약속", "nsy", "제주도그릴", 25.112233, 45.112233, "2019-12-17 11:43:19", 2000);
 	@PostMapping(value="/promise")
 	@ResponseBody
@@ -231,5 +234,4 @@ public class OnTimeController {
 		}
 		return result;
 	}
-
 }
