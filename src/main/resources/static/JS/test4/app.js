@@ -18,7 +18,7 @@ new Vue({
             "placeX" : '',
             "placeY" : '',
             "promiseTime" : "2019-12-27 11:43:19.0"
-        },
+        }
         categories : ["Personal", "Business"],
     },
     methods: { // methods 객체

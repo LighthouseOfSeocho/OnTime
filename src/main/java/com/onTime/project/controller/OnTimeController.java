@@ -1,6 +1,7 @@
 package com.onTime.project.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -9,7 +10,9 @@ import javax.servlet.http.HttpSession;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import com.google.gson.JsonObject;
+
 import com.onTime.project.loginApi.GoogleLoginApi;
 import com.onTime.project.loginApi.KakaoLoginApi;
 import com.onTime.project.loginApi.NaverLoginApi;
@@ -26,6 +31,9 @@ import com.onTime.project.model.domain.Invitation;
 import com.onTime.project.model.domain.JsonReq;
 import com.onTime.project.model.domain.Promise;
 import com.onTime.project.model.domain.User;
+import com.onTime.project.model.domain.UserPromise;
+import com.onTime.project.model.es.Memo;
+import com.onTime.project.model.es.MemoService;
 import com.onTime.project.service.OnTimeService;
 
 @CrossOrigin(origins = "http://localhost:9000")
@@ -41,6 +49,15 @@ public class OnTimeController {
 	private NaverLoginApi naverLoginApi;
 	@Autowired
 	private GoogleLoginApi googleLoginApi;
+	@Autowired
+	private OnTimeService service;
+	@Autowired
+	private MemoService esService;
+	
+
+	@Autowired
+	private OnTimeService service;
+
 	@Autowired
 	private OnTimeService service;
 
@@ -59,6 +76,7 @@ public class OnTimeController {
 		System.out.println("test1\n");
 		boolean flag = service.createUser(kakaoUser.get("id").toString(), kakaoUser.get("nickname").toString());
 		System.out.println("test2\n");
+		System.out.println(kakaoUser + " "+flag);
 		if(flag == true) {
 			System.out.println("test3\n");
 			model.addObject("PI",kakaoUser);
@@ -66,9 +84,7 @@ public class OnTimeController {
 		}else {
 			System.out.println("test5\n");
 			model.addObject("PI",kakaoUser);
-			model.setViewName("app");
 		}
-		
 		model.setViewName("app");
 		System.out.println("test7\n");
 		System.out.println(model);
@@ -157,9 +173,10 @@ public class OnTimeController {
 		return service.getMyPromises(userId);
 	}
 
+//	Promise dummyData = new Promise(1111, "거래처A 점심약속", "nsy", "제주도그릴", 25.112233, 45.112233, "2019-12-17 11:43:19", 2000);
 	@PostMapping(value="/promise")
 	@ResponseBody
-	public boolean createPromise(@RequestBody Promise promise) {
+	public Promise createPromise(@RequestBody Promise promise) {
 		return service.createPromise(promise);
 	}
 
@@ -169,4 +186,52 @@ public class OnTimeController {
 		return service.getMembers(jsonReq.getPromiseId());
 	}
 	
+	// test data1: Memo(promiseId=8, user="nsy", note="서초역 제주도그릴 강추. 주변에 커피 마실 곳이 없음. 업체 사장님 딸 생일은 5월 15일, 사장님 딸 올해 고3.")
+	// test data1: Memo(promiseId=11, user="nsy", note="문부장님 부대찌개 별로 안좋아하셨음. 내년 1월초에 부서별 사업계획 확정, 내년 2월말에 계약 가능성 내비침.")
+	// test data1: Memo(promiseId=12, user="nsy", note="소주 마시고 싶을 때 오기 좋은 곳, 대표메뉴 마늘닭똥집. 주말에 사람 많아서 예약 필수. 영동이 첫째 내년 4월 출산 예정")
+	
+	@GetMapping(value="/createMemo")
+	@ResponseBody
+	public String createMemo(@RequestParam("promiseId") int promiseId, @RequestParam("user") String user, String note) {
+		String result;
+		Memo instance = new Memo();
+		instance.setPromiseId(promiseId);
+		instance.setUser(user);
+		instance.setNote(note);
+		try {
+			esService.save(instance);
+			result = "메모 저장 성공";
+		} catch (Exception e) {
+			result = "메모 저장 실패";
+		}
+		return result; 
+	}
+	
+	@GetMapping(value="/searchKwd")
+	@ResponseBody
+	public String searchKwd(@RequestParam("kwd") String kwd){
+		List<Memo> mList;
+		List<Promise> pList;
+		UserPromise upUnit;
+		List<UserPromise> upList;
+		List<User> uList;
+		List<Object> 
+		HashMap<String, String> noteMap = new HashMap<>();
+		HashMap<String, Promise> promiseMap = new HashMap<>();
+		HashMap<String, List<User>> memberMap = new HashMap<>();
+		
+		try {
+			mList = esService.findByKwd(kwd);
+			for(Memo mUnit : mList) {
+				noteMap.put("note", mUnit.getNote());
+				promiseMap.put("promise", service.findPromiseByPromiseId(mUnit.getPromiseId()));
+				memberMap.put("member", service.getMembers(mUnit.getPromiseId()));
+				
+			}
+			
+		} catch (Exception e) {
+			result = "키워드 조회 실패";
+		}
+		return result;
+	}
 }

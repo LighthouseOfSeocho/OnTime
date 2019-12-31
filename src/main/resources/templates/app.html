@@ -22,6 +22,8 @@
 </head>
 
 <body>
+      
+
     <div id="app" class="app">
         <div class="head"> 
             <span class="title"> On-Time </span><br>
@@ -77,12 +79,13 @@
             <button class="add-btn" type="button" @click="Bwrite()" v-if="mode === 'list'"> + </button>
         </div> 
     </div>
+    
+
     <script src="JS/test4/app.js"></script>
 </body>
 <script th:inline="javascript">
     /*<![CDATA[*/
     var query = /*[[${PI}]]*/ 'default';
-    console.log(query) // object
     /*]]>*/
 </script>
 
