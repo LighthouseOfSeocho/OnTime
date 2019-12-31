@@ -29,9 +29,14 @@ public class User {
 	
 	public User() {}
 	
-	public User(String userId, String userName) {
+	public User(String userId, String userName, String userEmail) {
 		this.userId = userId;
 		this.userName = userName;
+		this.userEmail = userEmail;
+	}
+
+	public User(String string, String string2) {
+		// TODO Auto-generated constructor stub
 	}
 	
 }

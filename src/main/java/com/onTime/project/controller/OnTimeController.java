@@ -54,24 +54,25 @@ public class OnTimeController {
 
 	@RequestMapping(value = "/oauth")
 	@ResponseBody
-	public void getUserInfo(@RequestParam("code") String code, ModelAndView model) {
+	public ModelAndView getUserInfo(@RequestParam("code") String code, ModelAndView model) {
 //		System.out.println(((JsonObject) kakaoLoginApi.getUserInfo(kakaoLoginApi.getAccessKakaoToken(code))).toString()); // {"id":"1243182388","nickname":"한우석"}
 		JSONObject kakaoUser = ((JSONObject) kakaoLoginApi.getUserInfo(kakaoLoginApi.getAccessKakaoToken(code)));
 		System.out.println("test1\n");
 		boolean flag = service.createUser(kakaoUser.get("id").toString(), kakaoUser.get("nickname").toString());
 		System.out.println("test2\n");
+		System.out.println(kakaoUser + " "+flag);
 		if(flag == true) {
 			System.out.println("test3\n");
 			model.addObject("PI",kakaoUser);
-			model.setViewName("app");
 			System.out.println("test4\n");
 		}else {
 			System.out.println("test5\n");
-			model.setViewName("index.html");
+			model.addObject("PI",kakaoUser);
 		}
+		model.setViewName("app");
 		System.out.println("test7\n");
 		System.out.println(model);
-//		return model;
+		return model;
 	}
 	
 	/* Naver Login */

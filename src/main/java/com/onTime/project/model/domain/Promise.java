@@ -43,4 +43,9 @@ public class Promise {
 		this.promiseTime=promiseTime;
 		this.amount=amount;
 	}
+
+	public void setInvitation(String sha256) {
+		// TODO Auto-generated method stub
+		
+	}
 }

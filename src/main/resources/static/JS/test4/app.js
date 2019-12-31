@@ -10,7 +10,15 @@ new Vue({
         Pmemos: [],
         Bmemos: [],
         category : "Personal",
-        categories : ["Personal", "Business"]
+        categories : ["Personal", "Business"],
+        createPromise : {
+            "promiseName" : '',
+            "roomHostId" : '',
+            "placeName" : '',
+            "placeX" : '',
+            "placeY" : '',
+            "promiseTime" : "2019-12-27 11:43:19.0"
+        }
     },
     methods: { // methods 객체
         renew: function(val) {
@@ -125,6 +133,19 @@ new Vue({
                 this.mode = "list";
                 sessionStorage.setItem("Bmemos", JSON.stringify(this.Bmemos));
             }
+        },
+        printInfo: function(query){
+            this.createPromise.roomHostId=query.id;
+            axios.post('/promise', this.createPromise)
+                .then(res=>{
+                    if(res.data){
+                        alert('약속이 생성되었습니다.')
+                    }else{
+                        alert('오류 발생')
+                    }
+                }).catch(e=>{
+                    alert(e)
+                })
         }
     },
 
