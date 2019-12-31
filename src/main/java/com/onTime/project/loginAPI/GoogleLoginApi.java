@@ -1,4 +1,4 @@
-package com.onTime.project.loginAPI;
+package com.onTime.project.loginApi;
 
 import java.io.IOException;
 import java.util.HashMap;
