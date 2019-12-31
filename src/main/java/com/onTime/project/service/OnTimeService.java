@@ -134,4 +134,10 @@ public class OnTimeService {
 	public User test() {
 		return userRepo.findById("aaa").get();
 	}
+	
+	
+	//promiseId로 방전체 정보 검색
+	public Promise findPromiseByPromiseId(int promiseId) {
+		return promiseRepo.findPromiseByPromiseId(promiseId);
+	}
 }

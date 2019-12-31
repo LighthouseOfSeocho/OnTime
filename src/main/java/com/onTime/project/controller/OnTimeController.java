@@ -1,6 +1,7 @@
 package com.onTime.project.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -27,6 +28,7 @@ import com.onTime.project.model.domain.Invitation;
 import com.onTime.project.model.domain.JsonReq;
 import com.onTime.project.model.domain.Promise;
 import com.onTime.project.model.domain.User;
+import com.onTime.project.model.domain.UserPromise;
 import com.onTime.project.model.es.Memo;
 import com.onTime.project.model.es.MemoService;
 import com.onTime.project.service.OnTimeService;
@@ -47,9 +49,9 @@ public class OnTimeController {
 	private GoogleLoginApi googleLoginApi;
 	@Autowired
 	private OnTimeService service;
-	
 	@Autowired
 	private MemoService esService;
+	
 
 	/* Kakao Login */
 	@RequestMapping(value = "/login")
@@ -168,9 +170,25 @@ public class OnTimeController {
 	@GetMapping(value="/searchKwd")
 	@ResponseBody
 	public String searchKwd(@RequestParam("kwd") String kwd){
-		String result;
+		List<Memo> mList;
+		List<Promise> pList;
+		UserPromise upUnit;
+		List<UserPromise> upList;
+		List<User> uList;
+		List<Object> 
+		HashMap<String, String> noteMap = new HashMap<>();
+		HashMap<String, Promise> promiseMap = new HashMap<>();
+		HashMap<String, List<User>> memberMap = new HashMap<>();
+		
 		try {
-			result = esService.findByKwd(kwd).toString();
+			mList = esService.findByKwd(kwd);
+			for(Memo mUnit : mList) {
+				noteMap.put("note", mUnit.getNote());
+				promiseMap.put("promise", service.findPromiseByPromiseId(mUnit.getPromiseId()));
+				memberMap.put("member", service.getMembers(mUnit.getPromiseId()));
+				
+			}
+			
 		} catch (Exception e) {
 			result = "키워드 조회 실패";
 		}

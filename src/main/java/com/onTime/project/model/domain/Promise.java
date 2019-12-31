@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 public class Promise {
 	@Id
 	@JsonProperty(value = "id")
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int promiseId;
 	private String promiseName;
 	private String roomHostId;

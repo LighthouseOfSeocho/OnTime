@@ -1,13 +1,14 @@
 package com.onTime.project.model.es;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.onTime.project.model.dao.MemoRepository;
+import com.onTime.project.model.dao.UserPromiseRepo;
+import com.onTime.project.model.domain.Promise;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -34,12 +35,12 @@ public class MemoService {
 	}
 	
 	public List<Memo> findByKwd(String kwd) {
-		List<Memo> list = new ArrayList<>();
+		List<Memo> mList = new ArrayList<>();
 		List<Memo> result = memoRepository.findByNoteContaining(kwd);
-		for(Memo unit : result) {
-			list.add(unit);
+		for(Memo mUnit : result) {
+			mList.add(mUnit);
 		}
-		return list;
+		return mList;
 	}
 
 }
