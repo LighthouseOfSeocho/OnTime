@@ -6,9 +6,7 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name="USER")
@@ -34,8 +32,5 @@ public class User {
 		this.userName = userName;
 	}
 
-	public User(String string, String string2) {
-		// TODO Auto-generated constructor stub
-	}
 	
 }

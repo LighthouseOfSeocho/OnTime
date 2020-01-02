@@ -42,22 +42,18 @@ public class OnTimeService {
 		}
 	}
 	
-	public boolean createUser(String userId, String userName) {
-		boolean flag = false;
-		System.out.println("11111111");
-		List<User> list = userRepo.findUserByuserIdEquals(userId);
-		System.out.println("2222222222");
-		System.out.println(list);
-        if (list.size() == 0) {
-        	System.out.println("333333333");
-        	userRepo.save(new User(userId,userName));
-        	System.out.println("44444444444");
-        	flag = true;
-        	System.out.println("6666666666666");
-        } else {
-        	return flag;
-        }
-        return flag;
+	public boolean createUser(String id, String name) {
+		try {
+			userRepo.findById(id).get();
+			return false;
+		} catch (Exception e) {
+			try {
+				userRepo.save(new User(id,name));
+				return true;
+			} catch (Exception e2) {
+				return false;
+			}
+		}
 	}
 	
 	
@@ -122,15 +118,13 @@ public class OnTimeService {
 	}
 	
 	//방에 참여중인 멤버
-	public List<User> getMembers(int promiseId){
-		List<User> users = new ArrayList<>();
+	public List<String> getMembers(int promiseId){
+		List<String> users = new ArrayList<>();
 		List<UserPromise> tempList = userPromiseRepo.findByPromiseId(promiseId);
 		if(!tempList.isEmpty()) {
 			for(UserPromise up : tempList) {
-				Optional<User> temp = userRepo.findById(up.getUserId());
-				if(temp.isPresent()) {
-					users.add(temp.get());
-				}
+//				Optional<User> temp = userRepo.findById(up.getUserId());
+				users.add(up.getUserId());
 			}
 		}
 		return users;
@@ -139,11 +133,6 @@ public class OnTimeService {
 	public Promise createPromise(Promise promise) {
 		Promise n = null;
 		try {
-			promiseRepo.save(promise);
-			System.out.println(promise.getPromiseId());
-			promise.setInvitation(sha256(promise.getPromiseId()+""));
-			promiseRepo.save(promise);
-			return true;
 			System.out.println("입력 데이터: "+ promise);
 			n = promiseRepo.save(promise);
 			System.out.println("/데이터 저장 완료");
@@ -163,5 +152,10 @@ public class OnTimeService {
 	//promiseId로 방전체 정보 검색
 	public Promise findPromiseByPromiseId(int promiseId) {
 		return promiseRepo.findPromiseByPromiseId(promiseId);
+	}
+	
+	//미팅 참가자와 미팅ID 저장
+	public UserPromise createUserPromise(UserPromise userPromise) {
+		return userPromiseRepo.save(userPromise);
 	}
 }

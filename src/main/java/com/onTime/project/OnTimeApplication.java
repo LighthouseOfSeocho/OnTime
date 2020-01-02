@@ -1,21 +1,22 @@
 package com.onTime.project;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.vavr.jackson.datatype.VavrModule;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.vavr.jackson.datatype.VavrModule;
 
 
-@EnableJpaRepositories(basePackages="com.onTime.project.model.dao")
+
+@EnableJpaRepositories(basePackages={"com.onTime.project.model.dao"})
 @EnableElasticsearchRepositories(basePackages="com.onTime.project.model.dao")
-@EntityScan({"com.onTime.project.model.domain", "com.onTime.project.model.es"})
+@EntityScan({"com.onTime.project.model.domain"})
 @SpringBootApplication
 //@EnableJpaRepositories(basePackages= {"com.onTime.project.model.dao"})
 //@EntityScan("com.onTime.project.model.domain")

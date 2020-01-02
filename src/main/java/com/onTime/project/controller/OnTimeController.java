@@ -1,7 +1,7 @@
 package com.onTime.project.controller;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -10,9 +10,7 @@ import javax.servlet.http.HttpSession;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,18 +20,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-import com.google.gson.JsonObject;
 
 import com.onTime.project.loginApi.GoogleLoginApi;
 import com.onTime.project.loginApi.KakaoLoginApi;
 import com.onTime.project.loginApi.NaverLoginApi;
 import com.onTime.project.model.domain.Invitation;
 import com.onTime.project.model.domain.JsonReq;
+import com.onTime.project.model.domain.Memo;
 import com.onTime.project.model.domain.Promise;
 import com.onTime.project.model.domain.User;
 import com.onTime.project.model.domain.UserPromise;
-import com.onTime.project.model.es.Memo;
-import com.onTime.project.model.es.MemoService;
+import com.onTime.project.service.MemoService;
 import com.onTime.project.service.OnTimeService;
 
 @CrossOrigin(origins = "http://localhost:9000")
@@ -54,12 +51,6 @@ public class OnTimeController {
 	@Autowired
 	private MemoService esService;
 	
-
-	@Autowired
-	private OnTimeService service;
-
-	@Autowired
-	private OnTimeService service;
 
 	/* Kakao Login */
 	@RequestMapping(value = "/login")
@@ -180,11 +171,12 @@ public class OnTimeController {
 		return service.createPromise(promise);
 	}
 
-	@GetMapping(value = "/promise/members")
+	@GetMapping(value="/promise/members")
 	@ResponseBody
-	public List<User> getMembers(@RequestBody JsonReq jsonReq) {
+	public List<String> getMembers(@RequestBody JsonReq jsonReq){
 		return service.getMembers(jsonReq.getPromiseId());
 	}
+	
 	
 	// test data1: Memo(promiseId=8, user="nsy", note="서초역 제주도그릴 강추. 주변에 커피 마실 곳이 없음. 업체 사장님 딸 생일은 5월 15일, 사장님 딸 올해 고3.")
 	// test data1: Memo(promiseId=11, user="nsy", note="문부장님 부대찌개 별로 안좋아하셨음. 내년 1월초에 부서별 사업계획 확정, 내년 2월말에 계약 가능성 내비침.")
@@ -207,31 +199,64 @@ public class OnTimeController {
 		return result; 
 	}
 	
+	//모임에 다른 사람 초대 완료시 그 사람 ID와 모임ID mapping
+	@GetMapping(value="/joinPromise")
+	@ResponseBody
+	public String joinPromise(@RequestParam("userId") String userId, @RequestParam("promiseId") int promiseId) {
+		String result;
+		UserPromise instance = new UserPromise();
+		instance.setUserId(userId);
+		instance.setPromiseId(promiseId);
+		try {
+			service.createUserPromise(instance);
+			System.out.println();
+			result = "미팅 초대 성공";
+		} catch (Exception e) {
+			result = "미팅 초대 실패";
+		}
+		return result;
+	}
+	
+	
+	@SuppressWarnings("null")
 	@GetMapping(value="/searchKwd")
 	@ResponseBody
 	public String searchKwd(@RequestParam("kwd") String kwd){
+		String result;
+		String note;
+		Promise promise;
+		List<String> members;
 		List<Memo> mList;
-		List<Promise> pList;
-		UserPromise upUnit;
-		List<UserPromise> upList;
-		List<User> uList;
-		List<Object> 
-		HashMap<String, String> noteMap = new HashMap<>();
-		HashMap<String, Promise> promiseMap = new HashMap<>();
-		HashMap<String, List<User>> memberMap = new HashMap<>();
+		
+		List<Object> allList = new ArrayList<>();
 		
 		try {
 			mList = esService.findByKwd(kwd);
 			for(Memo mUnit : mList) {
-				noteMap.put("note", mUnit.getNote());
-				promiseMap.put("promise", service.findPromiseByPromiseId(mUnit.getPromiseId()));
-				memberMap.put("member", service.getMembers(mUnit.getPromiseId()));
+
+				note = mUnit.getNote();	
+				promise = service.findPromiseByPromiseId(mUnit.getPromiseId());
+				members = service.getMembers(mUnit.getPromiseId());
 				
+				List<Object> unitList = new ArrayList<>();
+				
+				unitList.add(promise.getPromiseId());
+				unitList.add(promise.getPlaceName());
+				unitList.add(promise.getPlaceX());
+				unitList.add(promise.getPlaceY());
+				unitList.add(members);
+				unitList.add(note);
+				allList.add(unitList);
 			}
+			result = allList.toString();
 			
 		} catch (Exception e) {
 			result = "키워드 조회 실패";
 		}
 		return result;
 	}
+	
+	
+	
+	
 }

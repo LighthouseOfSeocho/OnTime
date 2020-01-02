@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <!-- view port : 모바일 형태(사이즈..등)로  작업할때 설정-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap-theme.min.css" integrity="sha384-6pzBo3FDv/PJ8r2KRkGHifhEocL+1X2rVCTTkUfGk7/0pbek5mMa1upzvWbrUbOZ" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+    <link href="JS/test4/app.css" rel="stylesheet" />
+    <title>가즈아앙~</title>
+</head>
+
+<body>
+      
+
+    <div id="app" class="app">
+        <div class="head"> 
+            <span class="title"> On-Time </span><br>
+            <button v-for='c in categories' :class="{ 'active' : category === c }" @click="category = c">{{ c }}</button>
+            <span class="list-btn" v-if = "mode !== 'list'" @click = "mode = 'list'"> &lt; </span>
+        </div>
+        <div class="body" v-if="category === 'Personal'">
+            <div class="list" v-if="mode === 'list'">
+                <ul>
+                    <li v-for="m in Pmemos" @click = "Popen(m.title)">{{ m.title }}</li>
+                </ul>
+            </div>
+            <div class="write" v-else> <!-- 상세내용 표기 -->
+                <textarea v-model = "memo.title"></textarea>
+                <button class="save-btn" type="button" @click="Psave()" :class = "{ 'full' : mode === 'write' }">저장</button> <!-- 버튼 동적으로 만들기 -->
+                <button class="remove-btn" type="button" @click="Premove()" v-if="mode === 'edit'">삭제</button>
+            </div>
+            <button class="btn btn-toggle add-btn" type="button" data-toggle="modal" data-target="#myModal" v-if="mode === 'list'"> + </button>
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" role="modal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>약속 만들기</h2>
+                    </div>
+                    <div class="modal-body">
+                        <p>약속이름 :</p>
+                        <input v-model="createPromise.promiseName" placeholder="약속이름">
+                        <p>약속장소명 :</p>
+                        <input v-model="createPromise.placeName" placeholder="약속장소명">
+                        <p>약속시간 :</p>
+                        <input v-model="createPromise.promiseTime" placeholder="약속시간">
+                    </div>
+                    <div class="modal-footer">
+                        <button @click="printInfo(this.query)">만들기</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="body" v-if="category === 'Business'">
+            <div class="list" v-if="mode === 'list'">
+                <ul>
+                    <li v-for="m in Bmemos" @click = "Bopen(m.id)">{{ m.title }}</li>
+                </ul>
+            </div>
+            <div class="write" v-else> <!-- 상세내용 표기 -->
+                <textarea v-model = "memo.title"></textarea>
+                <button class="save-btn" type="button" @click="Bsave()" :class = "{ 'full' : mode === 'write' }">저장</button> <!-- 버튼 동적으로 만들기 -->
+                <button class="remove-btn" type="button" @click="Bremove()" v-if="mode === 'edit'">삭제</button>
+            </div>
+            <button class="add-btn" type="button" @click="Bwrite()" v-if="mode === 'list'"> + </button>
+        </div> 
+    </div>
+    
+
+    <script src="JS/test4/app.js"></script>
+</body>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var query = /*[[${PI}]]*/ 'default';
+    /*]]>*/
+</script>
+
+</html>
