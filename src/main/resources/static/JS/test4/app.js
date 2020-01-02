@@ -1,7 +1,8 @@
-new Vue({
+let vue = new Vue({
     el: "#app",
     data: { // data 객체
-        mode: "list", // 상태 표시
+        mode: "list", // 상태 표시,
+        user: null,
         memo: {
             id: null,
             title: null,
@@ -18,10 +19,16 @@ new Vue({
             "placeX" : '',
             "placeY" : '',
             "promiseTime" : "2019-12-27 11:43:19.0"
-        }
-        categories : ["Personal", "Business"],
+        },
+        promises : '',
+        searchedPlaces : null
     },
     methods: { // methods 객체
+        setPlace: function(place){
+            this.createPromise.placeName=place.place_name
+            this.createPromise.placeX=place.x
+            this.createPromise.placeY=place.y
+        },
         renew: function(val) {
             return JSON.parse(JSON.stringify(val)); // JSON.stringify()는 값을 JSON 표기법으로 변환
         },
@@ -151,6 +158,7 @@ new Vue({
     },
 
     created: function() { // vue.js가 가지고 있는 기본 메소드, 앱이 처음 생성될때 실행 되는 부분
+        this.user=query
         let Pmemos = localStorage.getItem("Pmemos");
         let Bmemos = sessionStorage.getItem("Bmemos");
         if(Pmemos) { // 존재 여부
@@ -158,5 +166,12 @@ new Vue({
         } else {
             this.Bmemos = JSON.parse(Bmemos);
         }
+        axios.get('/promise',{params:{userId:this.user.id}})
+            .then(res=>{
+                this.promises=res.data
+            })
+            .catch(e=>{
+                console.log(e)
+            })
     }
 });

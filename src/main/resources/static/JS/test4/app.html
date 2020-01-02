@@ -21,7 +21,11 @@
         <div class="body" v-if="category === 'Personal'">
             <div class="list" v-if="mode === 'list'">
                 <ul>
+<<<<<<< HEAD
+                    <li th:text="${PI.id}" v-for="m in Pmemos" @click = "Popen(m.title)">{{ m.title }}</li>
+=======
                     <li v-for="m in Pmemos" @click = "Popen(m.title)">{{ m.title }}</li>
+>>>>>>> be9b34e55856b6096d6000bec4d0106b8b9da24e
                 </ul>
             </div>
             <div class="write" v-else> <!-- 상세내용 표기 -->
@@ -56,4 +60,8 @@
     console.log(query) // object
     /*]]>*/
 </script>
+<<<<<<< HEAD
+
+=======
+>>>>>>> be9b34e55856b6096d6000bec4d0106b8b9da24e
 </html>

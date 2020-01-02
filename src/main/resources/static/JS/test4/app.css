@@ -36,6 +36,11 @@
   line-height: 0;
 }
 
+.app > .body {
+  width: 100%;
+  text-align: center;
+}
+
 .app > .body ul {
   list-style: none;
   margin: 0;
@@ -97,4 +102,18 @@
 .app > .body > .write .remove-btn {
   background: black;
   float: right;
+}
+
+#map {
+  position: relative;
+  background-color: pink;
+  width: 60%;
+  padding-bottom: 60%;
+  overflow:hidden;
+}
+
+#create-promise {
+  display: inline-block;
+  width: 70%;
+  margin: 0 auto;
 }
