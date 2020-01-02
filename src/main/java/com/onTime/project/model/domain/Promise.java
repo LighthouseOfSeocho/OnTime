@@ -32,20 +32,5 @@ public class Promise {
 	private Double placeY;
 	private String promiseTime;
 	private String invitation;
-	
-	public Promise(String promiseName, String roomHostId, String placeName, Double placeX, 
-			Double placeY, String promiseTime, String invitation){
-		this.promiseName=promiseName;
-		this.roomHostId=roomHostId;
-		this.placeName=placeName;
-		this.placeX=placeX;
-		this.placeY=placeY;
-		this.promiseTime=promiseTime;
-		this.invitation=invitation;
-	}
 
-	public void setInvitation(String sha256) {
-		// TODO Auto-generated method stub
-		
-	}
 }
