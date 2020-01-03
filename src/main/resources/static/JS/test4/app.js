@@ -18,13 +18,25 @@ let vue = new Vue({
             "placeName" : "",
             "placeX" : "",
             "placeY" : "",
-            "promiseTime" : "2019-12-27 11:43:19.0"
+            "promiseDate" : "",
+            "promiseTime" : "",
+            "promiseHour" : "",
+            "promiseMinute" : ""
         },
         searchedPlaces : null,
         promises : "",
-        selectedPromise : null
+        selectedPromise : null,
+        hour : ["00","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23"],
+        minute : ["00","10","20","30","40","50"]
     },
     methods: { // methods 객체
+        range: function(start,end){
+            let result = [];
+            for(let i = start ; i<end ; i++){
+                result.push(i);
+            }
+            return result;
+        },
         setPlace: function(place){
             this.createPromise.placeName=place.place_name
             this.createPromise.placeX=place.x
@@ -162,10 +174,24 @@ let vue = new Vue({
         },
         printInfo: function(query){
             this.createPromise.roomHostId = query.id;
-            axios.post("/promise", this.createPromise)
+            axios.post("/promise", {
+                promiseName : this.createPromise.promiseName,
+                roomHostId : this.createPromise.roomHostId,
+                placeName : this.createPromise.placeName,
+                placeX : this.createPromise.placeX,
+                placeY : this.createPromise.placeY,
+                promiseTime : this.createPromise.promiseDate+" "+this.createPromise.promiseHour+":"+this.createPromise.promiseMinute+":00.0"
+            })
                 .then(res=>{
                     if(res.data){
                         alert("약속이 생성되었습니다.");
+                        axios.get("/promise", {params:{userId:this.user.id}})
+                            .then(res=>{
+                                this.promises = res.data;
+                            })
+                            .catch(e=>{
+                                console.log(e);
+                            })
                     } else {
                         alert("오류 발생");
                     }
