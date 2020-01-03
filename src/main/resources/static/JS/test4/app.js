@@ -22,12 +22,18 @@ let vue = new Vue({
         },
         searchedPlaces : null,
         promises : "",
+        selectedPromise : null
     },
     methods: { // methods 객체
         setPlace: function(place){
             this.createPromise.placeName=place.place_name
             this.createPromise.placeX=place.x
             this.createPromise.placeY=place.y
+        },
+        selectPromise: function(promise){
+            console.log("Yeaahhhhh")
+            this.selectedPromise=promise
+            this.mode = "promise"
         },
         renew: function(val) {
             return JSON.parse(JSON.stringify(val)); // JSON.stringify()는 값을 JSON 표기법으로 변환
@@ -166,7 +172,22 @@ let vue = new Vue({
                 }).catch(e=>{
                     alert(e);
                 });
-        }
+        },
+        getLocation: function() {
+            if (navigator.geolocation) { // GPS를 지원하면
+              navigator.geolocation.getCurrentPosition(function(position) {
+                alert(position.coords.latitude + ' ' + position.coords.longitude);
+              }, function(error) {
+                console.error(error);
+              }, {
+                enableHighAccuracy: false,
+                maximumAge: 0,
+                timeout: Infinity
+              });
+            } else {
+              alert('GPS를 지원하지 않습니다');
+            }
+          }
     },
 
     created: function() { // vue.js가 가지고 있는 기본 메소드, 앱이 처음 생성될때 실행 되는 부분

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <link href="app.css" rel="stylesheet" />
+    <title>test</title>
+</head>
+<body>
+    <div id="app">
+        <div class="head">
+            <button v-for='c in tests' :class="{ 'active' : test === c }" @click="category = c">{{ c }}</button>
+        </div>
+        <hr/>
+        <div v-for='c in categories' v-if='category === c'>
+            <p>{{ c }} 모임</p>
+            <img :src="'../../img/' + c + '.png'" />
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -119,13 +119,15 @@ public class OnTimeService {
 	}
 	
 	//방에 참여중인 멤버
-	public List<String> getMembers(int promiseId){
-		List<String> users = new ArrayList<>();
+	public List<User> getMembers(int promiseId){
+		List<User> users = new ArrayList<>();
 		List<UserPromise> tempList = userPromiseRepo.findByPromiseId(promiseId);
 		if(!tempList.isEmpty()) {
 			for(UserPromise up : tempList) {
-//				Optional<User> temp = userRepo.findById(up.getUserId());
-				users.add(up.getUserId());
+				Optional<User> temp = userRepo.findById(up.getUserId());
+				if(temp.isPresent()) {
+					users.add(temp.get());
+				}
 			}
 		}
 		return users;

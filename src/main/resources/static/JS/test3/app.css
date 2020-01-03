@@ -1,0 +1,17 @@
+button {
+    background: gold;
+    border: 1px solid black;
+    padding: 7px;
+    cursor: pointer;
+    width: 47%;
+    margin: 5px;
+}
+
+button.active {
+    background: cadetblue;
+    color :white;
+}
+
+img {
+    width: 100px;
+}
