@@ -48,9 +48,6 @@ public class OnTimeController {
 	private GoogleLoginApi googleLoginApi;
 	@Autowired
 	private OnTimeService service;
-	@Autowired
-	private MemoService esService;
-	
 
 	/* Kakao Login */
 	@RequestMapping(value = "/login")
@@ -67,7 +64,6 @@ public class OnTimeController {
 		System.out.println("test1\n");
 		boolean flag = service.createUser(kakaoUser.get("id").toString(), kakaoUser.get("nickname").toString());
 		System.out.println("test2\n");
-		System.out.println(kakaoUser + " "+flag);
 		if(flag == true) {
 			System.out.println("test3\n");
 			model.addObject("PI",kakaoUser);
@@ -75,7 +71,9 @@ public class OnTimeController {
 		}else {
 			System.out.println("test5\n");
 			model.addObject("PI",kakaoUser);
+			model.setViewName("app");
 		}
+		
 		model.setViewName("app");
 		System.out.println("test7\n");
 		System.out.println(model);
@@ -164,10 +162,9 @@ public class OnTimeController {
 		return service.getMyPromises(userId);
 	}
 
-//	Promise dummyData = new Promise(1111, "거래처A 점심약속", "nsy", "제주도그릴", 25.112233, 45.112233, "2019-12-17 11:43:19", 2000);
 	@PostMapping(value="/promise")
 	@ResponseBody
-	public Promise createPromise(@RequestBody Promise promise) {
+	public boolean createPromise(@RequestBody Promise promise) {
 		return service.createPromise(promise);
 	}
 
@@ -176,7 +173,6 @@ public class OnTimeController {
 	public List<String> getMembers(@RequestBody JsonReq jsonReq){
 		return service.getMembers(jsonReq.getPromiseId());
 	}
-	
 	
 	// test data1: Memo(promiseId=8, user="nsy", note="서초역 제주도그릴 강추. 주변에 커피 마실 곳이 없음. 업체 사장님 딸 생일은 5월 15일, 사장님 딸 올해 고3.")
 	// test data1: Memo(promiseId=11, user="nsy", note="문부장님 부대찌개 별로 안좋아하셨음. 내년 1월초에 부서별 사업계획 확정, 내년 2월말에 계약 가능성 내비침.")
@@ -255,8 +251,5 @@ public class OnTimeController {
 		}
 		return result;
 	}
-	
-	
-	
 	
 }

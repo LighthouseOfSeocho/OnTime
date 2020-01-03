@@ -20,18 +20,4 @@ public class UserPromise {
 	private String userId;
 	private int promiseId;
 	
-	public UserPromise(String userId, int promiseId) {
-		this.userId = userId;
-		this.promiseId = promiseId;
-	}
-
-	public Integer getPromiseId() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public String getUserId() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

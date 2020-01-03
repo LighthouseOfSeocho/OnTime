@@ -66,6 +66,7 @@ public class OnTimeService {
 	public List<Promise> getMyPromises(String userId){
 		List<Promise> promises = new ArrayList<>();
 		List<UserPromise> tempList = userPromiseRepo.findByUserId(userId);
+		System.out.println(tempList);
 		if(!tempList.isEmpty()) {
 			for(UserPromise up : tempList) {
 				Optional<Promise> temp = promiseRepo.findById(up.getPromiseId());
@@ -130,18 +131,17 @@ public class OnTimeService {
 		return users;
 	}
 	
-	public Promise createPromise(Promise promise) {
-		Promise n = null;
+	public boolean createPromise(Promise promise) {
 		try {
-			System.out.println("입력 데이터: "+ promise);
-			n = promiseRepo.save(promise);
-			System.out.println("/데이터 저장 완료");
-//			return n;
+			promiseRepo.save(promise);
+			System.out.println(promise.getPromiseId());
+			promise.setInvitation(sha256(promise.getPromiseId()+""));
+			promiseRepo.save(promise);
+			return true;
 		}catch (Exception e) {
 			e.printStackTrace();
-//			return false;
+			return false;
 		}
-		return n;
 	}
 	
 	public User test() {
