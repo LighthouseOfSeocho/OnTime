@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- view port : 모바일 형태(사이즈..등)로  작업할때 설정-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <link href="app.css" rel="stylesheet" />
+    <title>가즈아앙~</title>
+</head>
+
+<body>
+    <div id="app" class="app">
+        <div class="head"> 
+            <span class="title"> On-Time </span>
+            <span class="list-btn" v-if = "mode !== 'list'" @click = "mode = 'list'"> &lt; </span>
+        </div>
+        <div class="body">
+            <div class="list" v-if="mode === 'list'">
+                <ul>
+                    <li v-for="m in memos" @click = "open(m.id)">{{ m.title }}</li>
+                </ul>
+            </div>
+            <div class="write" v-else> <!-- 상세내용 표기 -->
+                <textarea v-model = "memo.title"></textarea>
+                <button class="save-btn" type="button" @click="save()" :class = "{ 'full' : mode === 'write' }">저장</button> <!-- 버튼 동적으로 만들기 -->
+                <button class="remove-btn" type="button" @click="remove()" v-if="mode === 'edit'">삭제</button>
+            </div>
+            <button class="add-btn" type="button" @click="write()" v-if="mode === 'list'"> + </button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

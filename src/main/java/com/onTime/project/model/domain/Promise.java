@@ -32,5 +32,4 @@ public class Promise {
 	private Double placeY;
 	private String promiseTime;
 	private String invitation;
-	
 }

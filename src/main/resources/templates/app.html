@@ -33,11 +33,11 @@
         <div class="body" v-if="category === 'Personal'">
             <div class="list" v-if="mode === 'list'">
                 <ul>
-                    <li v-for="promise in promises" @click = "Popen(m.title)">{{ promise.promiseName }}</li>
+                    <li v-for="promise in promises" @click = "Popen(promise.promiseName)">{{ promise }}</li>
                 </ul>
             </div>
             <div class="write" v-else> <!-- 상세내용 표기 -->
-                <textarea v-model = "memo.title"></textarea>
+                <textarea v-model = "promises.promiseName"></textarea>
                 <button class="save-btn" type="button" @click="Psave()" :class = "{ 'full' : mode === 'write' }">저장</button> <!-- 버튼 동적으로 만들기 -->
                 <button class="remove-btn" type="button" @click="Premove()" v-if="mode === 'edit'">삭제</button>
             </div>

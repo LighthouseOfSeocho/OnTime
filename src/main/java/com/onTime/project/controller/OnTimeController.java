@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-
 import com.onTime.project.loginApi.GoogleLoginApi;
 import com.onTime.project.loginApi.KakaoLoginApi;
 import com.onTime.project.loginApi.NaverLoginApi;
@@ -173,11 +172,7 @@ public class OnTimeController {
 	public List<String> getMembers(@RequestBody JsonReq jsonReq){
 		return service.getMembers(jsonReq.getPromiseId());
 	}
-	
-	// test data1: Memo(promiseId=8, user="nsy", note="서초역 제주도그릴 강추. 주변에 커피 마실 곳이 없음. 업체 사장님 딸 생일은 5월 15일, 사장님 딸 올해 고3.")
-	// test data1: Memo(promiseId=11, user="nsy", note="문부장님 부대찌개 별로 안좋아하셨음. 내년 1월초에 부서별 사업계획 확정, 내년 2월말에 계약 가능성 내비침.")
-	// test data1: Memo(promiseId=12, user="nsy", note="소주 마시고 싶을 때 오기 좋은 곳, 대표메뉴 마늘닭똥집. 주말에 사람 많아서 예약 필수. 영동이 첫째 내년 4월 출산 예정")
-	
+
 	@GetMapping(value="/createMemo")
 	@ResponseBody
 	public String createMemo(@RequestParam("promiseId") int promiseId, @RequestParam("user") String user, String note) {
@@ -251,5 +246,5 @@ public class OnTimeController {
 		}
 		return result;
 	}
-	
+
 }

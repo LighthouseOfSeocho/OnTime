@@ -11,8 +11,8 @@ import lombok.Data;
 @Entity
 @Table(name="USER")
 @Data
-//@NoArgsConstructor
-//@AllArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 	@Id
 	@JsonProperty(value = "id")
@@ -24,8 +24,6 @@ public class User {
 	private String userAccount;
 	private String userBirthday;
 	private String userPhone;
-	
-	public User() {}
 	
 	public User(String userId, String userName) {
 		this.userId = userId;
