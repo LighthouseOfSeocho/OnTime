@@ -12,6 +12,6 @@ public interface MemoRepository extends ElasticsearchRepository<Memo, String> {
 	
 	Memo findByUserEquals(String user);
 	
-	List<Memo> findByNoteContaining(String kwd);
+	List<Memo> findByNoteContainingAndUser(String kwd, String user);
 
 }

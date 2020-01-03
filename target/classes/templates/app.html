@@ -8,6 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=d9e5153543b0702bf46e22f4f22c32e7&libraries=services"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
@@ -22,8 +23,7 @@
 </head>
 
 <body>
-      
-
+    <input type="hidden" >
     <div id="app" class="app">
         <div class="head"> 
             <span class="title"> On-Time </span><br>
@@ -33,17 +33,17 @@
         <div class="body" v-if="category === 'Personal'">
             <div class="list" v-if="mode === 'list'">
                 <ul>
-                    <li v-for="m in Pmemos" @click = "Popen(m.title)">{{ m.title }}</li>
+                    <li v-for="promise in promises" @click = "Popen(promise.promiseName)">{{ promise }}</li>
                 </ul>
             </div>
             <div class="write" v-else> <!-- 상세내용 표기 -->
-                <textarea v-model = "memo.title"></textarea>
+                <textarea v-model = "promises.promiseName"></textarea>
                 <button class="save-btn" type="button" @click="Psave()" :class = "{ 'full' : mode === 'write' }">저장</button> <!-- 버튼 동적으로 만들기 -->
                 <button class="remove-btn" type="button" @click="Premove()" v-if="mode === 'edit'">삭제</button>
             </div>
-            <button class="btn btn-toggle add-btn" type="button" data-toggle="modal" data-target="#myModal" v-if="mode === 'list'"> + </button>
+            <button class="btn btn-toggle add-btn" type="button" data-toggle="modal" data-target="#create-promise" v-if="mode === 'list'"> + </button>
             <!-- Modal -->
-            <div class="modal fade" id="myModal" role="modal">
+            <div class="modal fade" id="create-promise" role="modal">
                 <div class="modal-dialog">
                     <div class="modal-content">
                     <div class="modal-header">
@@ -54,6 +54,22 @@
                         <input v-model="createPromise.promiseName" placeholder="약속이름">
                         <p>약속장소명 :</p>
                         <input v-model="createPromise.placeName" placeholder="약속장소명">
+                        <!-- 카카오 맵 -->
+                        <div id="menu_wrap" class="bg_white">
+                            <div class="option">
+                                <div>
+                                    <form onsubmit="searchPlaces(); return false;">
+                                        검색 : <input type="text" value="이태원 맛집" id="keyword" size="15"> 
+                                        <button type="submit">검색하기</button> 
+                                    </form>
+                                </div>
+                            </div>
+                            <hr>
+                            <ul id="placesList">
+                                <li v-for="place in searchedPlaces" @click="setPlace(place)">{{place.place_name}}</li>
+                            </ul>
+                            <div id="pagination"></div>
+                        </div>
                         <p>약속시간 :</p>
                         <input v-model="createPromise.promiseTime" placeholder="약속시간">
                     </div>
@@ -79,14 +95,14 @@
             <button class="add-btn" type="button" @click="Bwrite()" v-if="mode === 'list'"> + </button>
         </div> 
     </div>
-    
-
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var query = /*[[${PI}]]*/ 'default';
+        /*]]>*/
+        
+    </script>
     <script src="JS/test4/app.js"></script>
+    <script src="JS/test4/map.js"></script>
 </body>
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    var query = /*[[${PI}]]*/ 'default';
-    /*]]>*/
-</script>
 
 </html>

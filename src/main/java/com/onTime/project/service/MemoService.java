@@ -28,9 +28,9 @@ public class MemoService {
 		return memoRepository.findByUserEquals(user);
 	}
 	
-	public List<Memo> findByKwd(String kwd) {
+	public List<Memo> findByKwdAndUser(String kwd, String user) {
 		List<Memo> mList = new ArrayList<>();
-		List<Memo> result = memoRepository.findByNoteContaining(kwd);
+		List<Memo> result = memoRepository.findByNoteContainingAndUser(kwd, user);
 		for(Memo mUnit : result) {
 			mList.add(mUnit);
 		}
