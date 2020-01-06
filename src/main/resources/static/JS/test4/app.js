@@ -18,33 +18,51 @@ let vue = new Vue({
             "placeName" : "",
             "placeX" : "",
             "placeY" : "",
-            "promiseTime" : "2019-12-27 11:43:19.0"
+            "promiseDate" : "",
+            "promiseTime" : "",
+            "promiseHour" : "",
+            "promiseMinute" : ""
         },
         searchedPlaces : null,
         promises : "",
+        selectedPromise : null,
+        hour : ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"],
+        minute : ["00", "10", "20", "30", "40", "50"],
+        roomCode: "",
+        copiedCode: ""
     },
     methods: { // methods 객체
+        range: function(start, end){
+            let result = [];
+            for(let i = start ; i < end ; i++){
+                result.push(i);
+            }
+            return result;
+        },
         setPlace: function(place){
-            this.createPromise.placeName=place.place_name
-            this.createPromise.placeX=place.x
-            this.createPromise.placeY=place.y
+            this.createPromise.placeName = place.place_name;
+            this.createPromise.placeX = place.x;
+            this.createPromise.placeY = place.y;
+        },
+        selectPromise: function(promise){
+            console.log("Yeaahhhhh");
+            this.selectedPromise = promise;
+            this.mode = "promise";
         },
         renew: function(val) {
             return JSON.parse(JSON.stringify(val)); // JSON.stringify()는 값을 JSON 표기법으로 변환
         },
 
         Popen: function(promiseName) {
-        	console.log(6666666666,promises)
-        	console.log(111111111111, this.mode);
             for(var i in this.promises) { // id를 가진 memos 찾기
-            	console.log(1231231231, i)
+                console.log(1231231231, i);
                 if(this.promises[i].promiseName === promiseName) { // id가 같은 memos 찾기
                     this.promises = this.renew(this.promises[i]); // 자바 스크립트에서 = 의 의미는 객체 일때 단순히 내용을 넣어주는것 뿐만 아니라 참조값으로 들어간다 
                     break; //그래서 Prenew 값만 들어가게 변환해야 한다
                 }
             }
             this.mode = "edit";
-            console.log(11111111,this.promises);
+            console.log(11111111, this.promises);
             console.log(2222222, this.mode);
         },
 
@@ -58,7 +76,7 @@ let vue = new Vue({
                 "placeY" : "",
                 "promiseTime" : "2019-12-27 11:43:19.0"
             }; // 초기화
-            console.log(22222222222,this.promises)
+            console.log(22222222222, this.promises);
         },
 
         Psave: function() {
@@ -77,7 +95,7 @@ let vue = new Vue({
                         break;
                     }
                 } // 내용 수정 
-                console.log(3333333,this.promises)
+                console.log(3333333, this.promises);
             }
 
             this.mode = "list";
@@ -85,7 +103,7 @@ let vue = new Vue({
         },
 
         Premove: function() {
-        	console.log(5555555,this.promises)
+            console.log(5555555, this.promises);
             if(confirm("정말 삭제하시겠습니까?")){
                 for(var i in this.promises){
                     if(this.promises[i].promiseName === this.promises.promiseName){
@@ -93,7 +111,7 @@ let vue = new Vue({
                         break;
                     }
                 }
-                console.log(4444444444,this.promises)
+                console.log(4444444444, this.promises);
 
                 this.mode = "list";
                 localStorage.setItem("promises", JSON.stringify(this.promises));
@@ -156,16 +174,54 @@ let vue = new Vue({
         },
         printInfo: function(query){
             this.createPromise.roomHostId = query.id;
-            axios.post("/promise", this.createPromise)
+            axios.post("/promise", {
+                promiseName : this.createPromise.promiseName,
+                roomHostId : this.createPromise.roomHostId,
+                placeName : this.createPromise.placeName,
+                placeX : this.createPromise.placeX,
+                placeY : this.createPromise.placeY,
+                promiseTime : this.createPromise.promiseDate + " " + this.createPromise.promiseHour + ":" + this.createPromise.promiseMinute + ":00.0"
+            })
                 .then(res=>{
                     if(res.data){
                         alert("약속이 생성되었습니다.");
+                        axios.get("/promise", {params:{userId:this.user.id}})
+                            .then(res=>{
+                                this.promises = res.data;
+                            })
+                            .catch(e=>{
+                                console.log(e);
+                            });
                     } else {
                         alert("오류 발생");
                     }
                 }).catch(e=>{
                     alert(e);
                 });
+        },
+        getLocation: function() {
+            if(navigator.geolocation) { // GPS를 지원하면
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    alert(position.coords.latitude + " " + position.coords.longitude);
+                }, function(error) {
+                    console.error(error);
+                }, {
+                    enableHighAccuracy: false,
+                    maximumAge: 0,
+                    timeout: Infinity
+                });
+            } else {
+                alert("GPS를 지원하지 않습니다");
+            }
+        },
+        getRoomId: function(){
+            var tempElem = document.createElement("textarea");
+            tempElem.value = this.selectedPromise.invitation;  
+            document.body.appendChild(tempElem);
+            tempElem.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempElem);
+            alert("주소가 클립보드에 복사되었습니다 친구에게 보내 주세요 >찡긋<");
         }
     },
 
@@ -185,6 +241,6 @@ let vue = new Vue({
             })
             .catch(e=>{
                 console.log(e);
-            })
+            });
     }
 });
