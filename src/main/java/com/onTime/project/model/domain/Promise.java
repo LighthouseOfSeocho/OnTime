@@ -30,6 +30,7 @@ public class Promise {
 	private Double placeX;
 	@Column(name="place_y")
 	private Double placeY;
+	private String address;
 	private String promiseTime;
 	private String invitation;
 }

@@ -117,3 +117,23 @@
   width: 70%;
   margin: 0 auto;
 }
+
+#my-page-btn {
+  background-image : url(/img/mypage.svg);
+  background-color : transparent;
+  display : inline-block;
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 35px;
+  width: 35px;
+  z-index: 3;
+  border-radius:75px;
+}
+
+.favorite {
+  border: 2px solid mediumturquoise;
+  border-radius: 10px;
+  margin: 2px 5px 2px 5px;
+  padding: 2px 2px 2px 2px;
+}

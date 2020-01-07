@@ -18,8 +18,9 @@ CREATE TABLE IF NOT EXISTS lighthouse.PROMISE (
 	promise_name VARCHAR(100) NOT NULL,
 	room_host_id VARCHAR(22) NOT NULL ,
 	place_name VARCHAR(30) NOT NULL,
-	place_x DOUBLE,
-	place_y DOUBLE,
+	place_x DOUBLE NOT NULL,
+	place_y DOUBLE NOT NULL,
+	address VARCHAR(255) NOT NULL,
 	promise_time DATETIME NOT NULL,
 	invitation VARCHAR(255) UNIQUE,
 	FOREIGN KEY (room_host_id) REFERENCES lighthouse.USER(user_id)

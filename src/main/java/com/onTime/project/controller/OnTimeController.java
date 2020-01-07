@@ -17,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -51,7 +52,7 @@ public class OnTimeController {
 
 	@RequestMapping(value = "/")
 	public ModelAndView index(HttpSession sess, ModelAndView mv) {
-		JSONObject user = (JSONObject) sess.getAttribute("PI");
+		User user = (User) sess.getAttribute("PI");
 		if(user==null) {
 			mv.setViewName("login");
 		}else {
@@ -71,31 +72,17 @@ public class OnTimeController {
 	@RequestMapping(value = "/oauth")
 	@ResponseBody
 	public ModelAndView getUserInfo(@RequestParam("code") String code, ModelAndView model, HttpSession sess) {
-//		System.out.println(((JsonObject) kakaoLoginApi.getUserInfo(kakaoLoginApi.getAccessKakaoToken(code))).toString()); // {"id":"1243182388","nickname":"한우석"}
 		JSONObject kakaoUser = ((JSONObject) kakaoLoginApi.getUserInfo(kakaoLoginApi.getAccessKakaoToken(code)));
-		System.out.println("test1\n");
-		boolean flag = service.createUser(kakaoUser.get("id").toString(), kakaoUser.get("nickname").toString());
-		System.out.println("test2\n");
-		if(flag == true) {
-			System.out.println("test3\n");
-			model.addObject("PI",kakaoUser);
-			System.out.println("test4\n");
-		}else {
-			System.out.println("test5\n");
-			model.addObject("PI",kakaoUser);
-			model.setViewName("app");
-		}
-		sess.setAttribute("PI", kakaoUser);
+		User user = service.getUser(kakaoUser);
+		sess.setAttribute("PI", user);
+		model.addObject("PI", user);
 		model.setViewName("app");
-		System.out.println("test7\n");
-		System.out.println(model);
 		return model;
 	}
 	
 	/* Naver Login */
 	@RequestMapping(value = "/loginNaver")
 	public String loginNaver(HttpSession session) {
-//		System.out.println(naverLoginApi.getAuthorizationUrl(session));
 		return "redirect:" + naverLoginApi.getAuthorizationUrl(session);
 	}
 
@@ -103,9 +90,6 @@ public class OnTimeController {
 	@ResponseBody
 	public ModelAndView callbackNaver(@RequestParam String code, @RequestParam String state, HttpSession session, ModelAndView model)
 			throws IOException, ParseException, InterruptedException, ExecutionException {
-//		System.out.println(((JSONObject) naverLoginApi.getUserProfile(naverLoginApi.getAccessToken(session, code, state))).getClass()); // class org.json.simple.JSONObject
-//		System.out.println(((JSONObject) naverLoginApi.getUserProfile(naverLoginApi.getAccessToken(session, code, state))));
-// {"birthday":"01-08","profile_image":"https:\/\/ssl.pstatic.net\/static\/pwe\/address\/img_profile.png","gender":"M","nickname":"hanwo","name":"한우석","id":"34508534","age":"20-29","email":"gazzari@hanmail.net"}
 		JSONObject naverUser = ((JSONObject) naverLoginApi.getUserProfile(naverLoginApi.getAccessToken(session, code, state)));
 		model.addObject("PI",naverUser);
 		model.setViewName("app");
@@ -125,9 +109,6 @@ public class OnTimeController {
 	@ResponseBody
 	public ModelAndView callbackGoogle(@RequestParam String code, @RequestParam String state, HttpSession session, ModelAndView model)
 			throws IOException, ParseException, InterruptedException, ExecutionException {
-//		System.out.println(((JSONObject) googleLoginApi.getUserProfile(googleLoginApi.getAccessToken(session, code, state))).toString());
-// email : {"sub":"106490326651663334165","email_verified":true,"picture":"https:\/\/lh3.googleusercontent.com\/a-\/AAuE7mA_yoNKgoEfzvS9vauvZedDndxiiZ8uww_x4yPUTw","email":"hanwo2052@gmail.com"}
-// profile : {"sub":"106490326651663334165","name":"han wop","given_name":"han","locale":"ko","family_name":"wop","picture":"https:\/\/lh3.googleusercontent.com\/a-\/AAuE7mA_yoNKgoEfzvS9vauvZedDndxiiZ8uww_x4yPUTw"}
 		JSONObject googleUSer = ((JSONObject) googleLoginApi.getUserProfile(googleLoginApi.getAccessToken(session, code, state)));
 		model.addObject("PI", googleUSer);
 		model.setViewName("redirect : app.html");
@@ -144,6 +125,12 @@ public class OnTimeController {
 	@ResponseBody
 	public boolean createUser(@RequestBody JsonReq jsonReq) {
 		return service.createUser(jsonReq.getUserId(), jsonReq.getUserName());
+	}
+	
+	@PutMapping(value ="/user")
+	@ResponseBody
+	public boolean updateUser(@RequestBody User userInfo) {
+		return service.updateUser(userInfo);
 	}
 
 	@GetMapping(value = "/user/invitation")
@@ -182,8 +169,8 @@ public class OnTimeController {
 
 	@GetMapping(value="/promise/members")
 	@ResponseBody
-	public List<User> getMembers(@RequestBody JsonReq jsonReq){
-		return service.getMembers(jsonReq.getPromiseId());
+	public List<User> getMembers(@RequestParam int promiseId){
+		return service.getMembers(promiseId);
 	}
 
 	

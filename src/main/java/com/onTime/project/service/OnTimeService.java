@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,6 +57,25 @@ public class OnTimeService {
 		}
 	}
 	
+	public User getUser(JSONObject kakaoUser) {
+		Optional<User> temp = userRepo.findById(kakaoUser.get("id").toString());
+		if(temp.isPresent()) {
+			return temp.get();
+		}else {
+			userRepo.save(new User(kakaoUser.get("id").toString(),kakaoUser.get("nickname").toString()));
+			return userRepo.findById(kakaoUser.get("id").toString()).get();
+		}
+	}
+	
+	public boolean updateUser(User userInfo) {
+		if(userRepo.findById(userInfo.getUserId()).isPresent()) {
+			userRepo.save(userInfo);
+			System.out.println(userInfo);
+			return true;
+		}else {
+			return false;
+		}
+	}
 	
 	//Promise CRUD
 	//내가 방장인 방들
@@ -130,6 +150,7 @@ public class OnTimeService {
 				}
 			}
 		}
+		System.out.println(users);
 		return users;
 	}
 	
@@ -149,7 +170,6 @@ public class OnTimeService {
 	public User test() {
 		return userRepo.findById("aaa").get();
 	}
-	
 	
 	//promiseId로 방전체 정보 검색
 	public Promise findPromiseByPromiseId(int promiseId) {
