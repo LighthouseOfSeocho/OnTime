@@ -28,4 +28,3 @@ public class OnTimeApplication {
 		return mapper.registerModule(new VavrModule());
 	}
 }
-

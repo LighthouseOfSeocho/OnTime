@@ -1,0 +1,8 @@
+body{
+  background-color:rgb(106,178,255);
+}
+.max-small {
+    width: auto; height: auto;
+    max-width: 300px;
+    max-height: 70px;
+}

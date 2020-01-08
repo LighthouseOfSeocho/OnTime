@@ -1,6 +1,10 @@
+body{
+	background:rgb(240,240,240);
+}
+
 .app > .head {
   padding: 10px;
-  background: pink;
+  background: rgb(106,178,255);
   border-bottom: 1px solid #ddd;
   text-align: center;
   position: relative;
@@ -8,23 +12,25 @@
 
 .app > .head .title{
   font-size: 20px;
-  color:  dimgray;
+  color:  rgb(106,178,255);
   font-weight: bold;
 }
 
 .app > .head button {
-  background: red;
-  border: 1px solid black;
-  padding: 7px;
+  background: rgb(106,178,255);
+  padding: 7%;
+  border: 1px solid rgb(106,178,255);
   cursor: pointer;
   width: 45%;
   margin: 7px;
+  color:white;
+  font-size: 1rem;
 }
-
-.app > .head button.active {
-  background: maroon;
-  color :white;
-}
+/* 버튼 눌렀을때 */
+ .app > .head button.active {
+  border-style: none;
+/*   border-bottom: 5px solid rgb(52, 220, 192);  */
+} 
 
 .app > .head .list-btn { 
   position: absolute;
@@ -35,7 +41,9 @@
   padding: 22px;
   line-height: 0;
 }
-
+#list{
+  background-color: white;
+}
 .app > .body {
   width: 100%;
   text-align: center;
@@ -56,13 +64,15 @@
 
 .app > .body .add-btn {
   display: inline-block;
-  padding: 29px 19px 29px 19px;
   font-size: 38px;
   position: fixed;
+  padding: 0 0 8px 0;
   right: 10px;
   bottom: 10px;
-  background: gold;
-  color: gray;
+  background: rgb(227,241,241);
+  color: white;
+  width: 4rem;
+  height: 4rem;
   border: 0;
   border-radius: 50%;
   line-height: 0;

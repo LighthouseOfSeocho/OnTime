@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -22,7 +22,8 @@
     <!-- Latest compiled and minified JavaScript -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link href="JS/test4/app.css" rel="stylesheet" />
-    <title>가즈아앙~</title>
+    <title>Main_page</title>
+
 </head>
 
 <body>
@@ -34,7 +35,7 @@
             <span class="list-btn" v-if = "mode !== 'list'" @click = "mode = 'list'"> &lt; </span>
         </div>
         <div class="body" v-if="category === 'Personal'">
-            <div class="list" v-if="mode === 'list'">
+            <div id="list" class="text-dark container text-center text-light" v-if="mode === 'list'">
                 <ul>
                     <li v-for="promise in promises" @click = "selectPromise(promise)">{{ promise.promiseName }}</li>
                 </ul>
@@ -50,8 +51,7 @@
             <!-- Modal -->
             
             <div>
-                <b-button v-b-modal.create-promise class="btn btn-toggle add-btn" v-if="mode === 'list'">+</b-button>
-              
+                <b-button v-b-modal.create-promise class="btn btn-toggle text-center add-btn" v-if="mode === 'list'">+</b-button>
                 <b-modal id="create-promise" title="약속 만들기" hide-footer>
                     <div class="modal-body">
                         <p>약속이름 :</p>
