@@ -22,22 +22,26 @@
     <!-- Latest compiled and minified JavaScript -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link href="JS/test4/app.css" rel="stylesheet" />
+    <link href="JS/test4/mypage.css" rel="stylesheet" />
     <title>가즈아앙~</title>
 </head>
 
 <body>
     <div id="app" class="app">
-        <div class="head"> 
-            <span class="title"> On-Time </span><br>
-            <button v-for='c in categories' :class="{ 'active' : category === c }" @click="category = c">{{ c }}</button>
+        <div class="head" v-if="mode != 'myPage'"> 
+            <div>
+	            <span v-for='c in categories' class="category-btn" :class="{ 'active' : category === c }" @click="category = c"><b>{{ c }}</b></span>            
+            </div>
             <button id="my-page-btn" class="" @click="setModeMyPage()"></button>
-            <span class="list-btn" v-if = "mode !== 'list'" @click = "mode = 'list'"> &lt; </span>
         </div>
+        <span class="list-btn" v-if = "mode !== 'list'" @click = "mode = 'list'"> &lt; </span>
         <div class="body" v-if="category === 'Personal'">
             <!-- 내 약속 모두 보기-->
             <div class="list" v-if="mode === 'list'">
                 <ul>
-                    <li v-for="promise in promises" @click = "selectPromise(promise)">{{ promise.promiseName }}</li>
+                    <li class="promise" v-for="promise in promises" @click = "selectPromise(promise)">{{ promise.promiseName }}
+                    <span class="promise-status" />
+                    </li>
                 </ul>
                 
             </div>
@@ -54,29 +58,39 @@
                 </ul>
             </div>
             <!-- 마이 페이지 -->
-            <div class="my-page" v-else-if="mode==='myPage'">
-                <p>이름 : {{user.userName}}</p>
-                <p>메일 : {{user.userEmail}}</p>
-                <p>성별 : </p>
-                <p>나이 : <input type="text" v-model="user.userAge" max="100" min="1" placeholder="나이를 입력해주세요"></p>
-                <p>연락처 : <input type="text" v-model="user.userPhone" placeholder="전화번호를 입력해주세요 010-0000-0000"></p>
-                <button @click="updateUser">수정</button>
-                <h3>Place</h3>
-                <table>
-                    <tr>
-                        <td v-for="place in favorite.place"><div class="favorite">{{place}}</div></td>
-                    </tr>
-                </table>
-                <h3>Best Friends</h3>
-                <table>
-                    <tr>
-                        <td v-for="f in favorite.friend"><div class="favorite">{{f}}</div></td>
-                    </tr>
-                </table>
+            <div id="my-page-wrapper" v-else-if="mode==='myPage'">
+	            <div class="my-page">
+	                <h1> {{user.userName}}</h1><hr>
+	                <p>메일 
+	                <button id="modify" @click="updateUser">수정</button>
+	                </p> 
+	                <input type="text" class="my-page-input" v-model="user.userEmail" max="100" min="1" placeholder="이메일을 입력해주세요">
+	                <p>성별</p>
+	                <input type="text" class="my-page-input" v-model="user.userGender" max="100" min="1" placeholder="Null select box로 바꾸자">
+	                <p>나이</p>
+	                <input type="text" class="my-page-input" v-model="user.userAge" max="100" min="1" placeholder="나이를 입력해주세요">
+	                <p>연락처</p>
+	                <input type="text" class="my-page-input" v-model="user.userPhone" placeholder="전화번호를 입력해주세요 010-0000-0000">
+	                <br><hr>
+	                <h3>자주 가는 장소</h3>
+	                <table>
+	                    <tr>
+	                        <td v-for="place in favorite.place"><div class="favorite">{{place}}</div></td>
+	                    </tr>
+	                </table>
+	                <br>
+	                <h3>자주 만나는 사람</h3>
+	                <table>
+	                    <tr>
+	                        <td v-for="f in favorite.friend"><div class="favorite">{{f}}</div></td>
+	                    </tr>
+	                </table>
+	            </div>
+	            <button id="logout-btn" @click="logout()">로그아웃</button>
             </div>
             <!-- 약속 만들기( Modal ) -->
             <div>
-                <b-button v-b-modal.create-promise class="btn btn-toggle add-btn" v-if="mode === 'list'">+</b-button>
+                <button v-b-modal.create-promise class="add-btn" v-if="mode === 'list'">+</button>
               
                 <b-modal id="create-promise" title="약속 만들기" hide-footer>
                     <div class="modal-body">
@@ -96,9 +110,9 @@
                                 </div>
                             </div>
                             <hr>
-                            <ul id="placesList">
+                            <ol id="placesList">
                                 <li v-for="place in searchedPlaces" @click="setPlace(place)">{{place.place_name}}</li>
-                            </ul>
+                            </ol>
                         </div>
                         <p>날짜 : </p>
                         <input type="date" v-model="createPromise.promiseDate" required>

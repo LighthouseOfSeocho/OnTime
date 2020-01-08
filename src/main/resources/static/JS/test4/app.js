@@ -148,6 +148,19 @@ let vue = new Vue({
                     return 0;
                 }
             }).slice(0,5);
+        },
+        logout: function(){
+            axios.get("/logout")
+                .then(res=>{
+                	if(res.data){
+                		this.user=null;
+                		alert('로그아웃 되었습니다');
+                		window.location.href = 'http://192.168.2.104:9000/';            		
+                	}
+                })
+                .catch(e=>{
+                    alert('로그아웃 실패')
+                })
         }
     },
 

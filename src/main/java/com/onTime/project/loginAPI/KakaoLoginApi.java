@@ -23,7 +23,7 @@ public class KakaoLoginApi {
 	
 	public String getAuthUrl() {
 		return "https://kauth.kakao.com/oauth/authorize?client_id=" + kakaoKey
-				+ "&redirect_uri=http://localhost:9000/oauth&response_type=code";
+				+ "&redirect_uri=http://192.168.2.104:9000/oauth&response_type=code";
 	}
 	
 	public String getAccessKakaoToken(String authorize_code) {
@@ -40,7 +40,7 @@ public class KakaoLoginApi {
 
 			// POST 요청에 필요로 요구하는 파라미터 스트림을 통해 전송
 			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
-			bw.write("grant_type=authorization_code&client_id=" + kakaoKey +"&redirect_uri=http://localhost:9000/oauth&code=" + authorize_code);
+			bw.write("grant_type=authorization_code&client_id=" + kakaoKey +"&redirect_uri=http://192.168.2.104:9000/oauth&code=" + authorize_code);
 			bw.flush();
 			
 			int responseCode = conn.getResponseCode();

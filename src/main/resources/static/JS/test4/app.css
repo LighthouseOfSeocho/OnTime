@@ -1,32 +1,43 @@
+body {
+  height: 100%;
+  background-color: rgb(243, 242, 242);
+}
+
+ul, li {
+  padding: 0 0 0 0;
+  margin: 0 0 0 0;
+}
+
 .app > .head {
+  position: relative;
   padding: 10px;
-  background: pink;
-  border-bottom: 1px solid #ddd;
+  background: rgb(126, 205, 241);
+  border-bottom: 1px solid white;
   text-align: center;
   position: relative;
 }
 
-.app > .head .title{
-  font-size: 20px;
-  color:  dimgray;
-  font-weight: bold;
-}
-
-.app > .head button {
-  background: red;
-  border: 1px solid black;
+.category-btn {
+  display: inline-block;
+  background: transparent;
+  border-width: 0 0 0 0;
   padding: 7px;
   cursor: pointer;
-  width: 45%;
-  margin: 7px;
+  width: 30%;
+  height: 50px;
+  margin: 10%;
+  margin-top: 60px;
+  color: white;
 }
 
-.app > .head button.active {
-  background: maroon;
-  color :white;
+.category-btn.active {
+  background: transparent;
+  border-bottom-color: white;
+  border-bottom: 5px solid rgb(62, 235, 220);
 }
 
-.app > .head .list-btn { 
+.list-btn { 
+  border-width: 0 0 0 0;
   position: absolute;
   left: 0;
   top: 0;
@@ -36,27 +47,56 @@
   line-height: 0;
 }
 
-.app > .body {
-  width: 100%;
+.list {
+  margin-top: -20px;
+}
+
+.promise {
+  position: relative;
+  background-color: white;
   text-align: center;
-}
-
-.app > .body ul {
   list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.app > .body ul li {
+  width: 90%;
+  height: 80px;
+  margin-left: 5%;
   padding: 20px;
   font-size: 16px;
-  border-bottom: 1px solid #ddd;
+  line-height: 40px;
   cursor: pointer;
+  border-radius: 20px;
+  margin-top: 5px;
+  z-index: 200;
+  animation: fade-promise 1s linear forwards;
+}
+
+.promise:hover {
+  transition: all 0.5s;
+  transition-timing-function:ease;
+  margin-left: 2.5%;
+  width: 95%;
+  font-size: 25px;
+}
+
+.promise-status {
+  display: inline-block;
+  background-image:url(http://kids.dongascience.com/upload/posting/2018/07/f3e86b80db87d6c964cc21f27575fd60.gif);
+  background-repeat:no-repeat;
+  background-size: cover;
+  height:80px; 
+  width:80px; 
+  margin:-20px 0 -20px 0; 
+  padding:0; 
+  position: absolute;
+  right: 5px;
 }
 
 .app > .body .add-btn {
+  padding: 0 0 0 0;
   display: inline-block;
-  padding: 29px 19px 29px 19px;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  line-height: 0px;
   font-size: 38px;
   position: fixed;
   right: 10px;
@@ -65,57 +105,6 @@
   color: gray;
   border: 0;
   border-radius: 50%;
-  line-height: 0;
-  outline: 0;
-}
-
-.app > .body > .write {
-  margin: 10px;
-}
-
-.app > .body > .write textarea {
-  width: 100%;
-  height: 250px;
-  max-width: 100%;
-  font-size: 16px;
-  padding: 10px;
-  box-sizing: border-box;
-  margin-bottom: 10px;
-}
-
-.app > .body > .write button{
-  width: 49%;
-  color: white;
-  padding: 15px;
-  border: 0;
-  margin-bottom: 10px;
-}
-
-.app > .body > .write .save-btn.full {
-  width: 100%;
-}
-
-.app > .body > .write .save-btn {
-  background: olive;
-}
-
-.app > .body > .write .remove-btn {
-  background: black;
-  float: right;
-}
-
-#map {
-  position: relative;
-  background-color: pink;
-  width: 60%;
-  padding-bottom: 60%;
-  overflow:hidden;
-}
-
-#create-promise {
-  display: inline-block;
-  width: 70%;
-  margin: 0 auto;
 }
 
 #my-page-btn {
@@ -128,12 +117,39 @@
   height: 35px;
   width: 35px;
   z-index: 3;
+  border-width: 0 0 0 0;
   border-radius:75px;
+  margin: 30px 15px 0 0;
 }
 
-.favorite {
-  border: 2px solid mediumturquoise;
-  border-radius: 10px;
-  margin: 2px 5px 2px 5px;
-  padding: 2px 2px 2px 2px;
+#map {
+  position: relative;
+  background-color: pink;
+  width: 60%;
+  padding-bottom: 60%;
+  overflow:hidden;
+}
+
+#placesList {
+  height: 140px;
+}
+
+#create-promise {
+  display: inline-block;
+  width: 70%;
+  margin: 0 auto;
+}
+
+
+@keyframes fade-promise {
+  from {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(40px);
+  }
+  to { 
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
 }

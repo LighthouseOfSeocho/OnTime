@@ -53,6 +53,7 @@ public class OnTimeController {
 	@RequestMapping(value = "/")
 	public ModelAndView index(HttpSession sess, ModelAndView mv) {
 		User user = (User) sess.getAttribute("PI");
+		System.out.println("야야야야야야야야야양양야야야양   "+user);
 		if(user==null) {
 			mv.setViewName("login");
 		}else {
@@ -172,7 +173,14 @@ public class OnTimeController {
 	public List<User> getMembers(@RequestParam int promiseId){
 		return service.getMembers(promiseId);
 	}
-
+	
+	@GetMapping(value="/logout")
+	@ResponseBody
+	public Boolean logout(HttpSession sess, ModelAndView mv) {
+		sess.removeAttribute("PI");
+		mv.setViewName("redirect:http://192.168.2.104:9000/login");
+		return true;
+	}
 	
 	//모임에 다른 사람 초대 완료시 그 사람 ID와 모임ID mapping
 	@GetMapping(value="/joinPromise")
