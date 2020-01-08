@@ -1,0 +1,12 @@
+DELETE /memo
+
+PUT /memo
+{
+  "mappings": {
+    "properties": {
+      "promiseId":    { "type": "integer" },  
+      "userId":  { "type": "long"  }, 
+      "note":   { "type": "text"  }     
+    }
+  }
+}

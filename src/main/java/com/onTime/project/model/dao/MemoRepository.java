@@ -10,8 +10,8 @@ import com.onTime.project.model.domain.Memo;
 @Repository("memoRepository")
 public interface MemoRepository extends ElasticsearchRepository<Memo, String> {
 	
-	Memo findByUserEquals(String user);
+	Memo findByUserIdEquals(long userId);
 	
-	List<Memo> findByNoteContainingAndUser(String kwd, String user);
+	List<Memo> findByNoteContainingAndUserId(String kwd, long userId);
 
 }

@@ -153,12 +153,7 @@ public class OnTimeService {
 	
 	//promiseId로 방전체 정보 검색
 	public Promise findPromiseByPromiseId(int promiseId) {
-		
-		
-		System.out.println("promiseId : " + promiseId);
-		Promise temp = promiseRepo.findByPromiseIdOrderByPromiseTime(promiseId).get(0);
-		System.out.println(temp);
-		return temp;
+		return promiseRepo.findPromiseByPromiseId(promiseId);
 	}
 	
 	//미팅 참가자와 미팅ID 저장

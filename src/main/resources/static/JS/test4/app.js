@@ -18,16 +18,35 @@ let vue = new Vue({
             "placeName" : "",
             "placeX" : "",
             "placeY" : "",
-            "promiseTime" : "2019-12-27 11:43:19.0"
+            "address" : "",
+            "promiseDate" : "",
+            "promiseTime" : "",
+            "promiseHour" : "",
+            "promiseMinute" : ""
         },
         searchedPlaces : null,
         promises : "",
+        selectedPromise : null,
+        hour : ["00","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23"],
+        minute : ["00","10","20","30","40","50"]
     },
     methods: { // methods 객체
+        range: function(start,end){
+            let result = [];
+            for(let i = start ; i<end ; i++){
+                result.push(i);
+            }
+            return result;
+        },
         setPlace: function(place){
             this.createPromise.placeName=place.place_name
             this.createPromise.placeX=place.x
             this.createPromise.placeY=place.y
+        },
+        selectPromise: function(promise){
+            console.log("Yeaahhhhh")
+            this.selectedPromise=promise
+            this.mode = "promise"
         },
         renew: function(val) {
             return JSON.parse(JSON.stringify(val)); // JSON.stringify()는 값을 JSON 표기법으로 변환
@@ -154,19 +173,49 @@ let vue = new Vue({
                 sessionStorage.setItem("Bmemos", JSON.stringify(this.Bmemos));
             }
         },
-        printInfo: function(query){
-            this.createPromise.roomHostId = query.id;
-            axios.post("/promise", this.createPromise)
+        create: function(){
+            this.createPromise.roomHostId = this.user.id;
+            axios.post("/promise", {
+                promiseName : this.createPromise.promiseName,
+                roomHostId : this.createPromise.roomHostId,
+                placeName : this.createPromise.placeName,
+                placeX : this.createPromise.placeX,
+                placeY : this.createPromise.placeY,
+                address : this.createPromise.address,
+                promiseTime : this.createPromise.promiseDate+" "+this.createPromise.promiseHour+":"+this.createPromise.promiseMinute+":00.0"
+            })
                 .then(res=>{
                     if(res.data){
                         alert("약속이 생성되었습니다.");
+                        axios.get("/promise", {params:{userId:this.user.id}})
+                            .then(res=>{
+                                this.promises = res.data;
+                            })
+                            .catch(e=>{
+                                console.log(e);
+                            })
                     } else {
                         alert("오류 발생");
                     }
                 }).catch(e=>{
                     alert(e);
                 });
-        }
+        },
+        getLocation: function() {
+            if (navigator.geolocation) { // GPS를 지원하면
+              navigator.geolocation.getCurrentPosition(function(position) {
+                alert(position.coords.latitude + ' ' + position.coords.longitude);
+              }, function(error) {
+                console.error(error);
+              }, {
+                enableHighAccuracy: false,
+                maximumAge: 0,
+                timeout: Infinity
+              });
+            } else {
+              alert('GPS를 지원하지 않습니다');
+            }
+          }
     },
 
     created: function() { // vue.js가 가지고 있는 기본 메소드, 앱이 처음 생성될때 실행 되는 부분
@@ -187,4 +236,5 @@ let vue = new Vue({
                 console.log(e);
             })
     }
+    
 });

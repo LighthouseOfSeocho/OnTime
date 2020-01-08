@@ -1,6 +1,6 @@
 .app > .head {
   padding: 10px;
-  background: lightskyblue;
+  background: pink;
   border-bottom: 1px solid #ddd;
   text-align: center;
   position: relative;
@@ -13,7 +13,7 @@
 }
 
 .app > .head button {
-  background: gold;
+  background: red;
   border: 1px solid black;
   padding: 7px;
   cursor: pointer;
@@ -22,7 +22,7 @@
 }
 
 .app > .head button.active {
-  background: cadetblue;
+  background: maroon;
   color :white;
 }
 

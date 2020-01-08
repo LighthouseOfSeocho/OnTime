@@ -24,13 +24,13 @@ public class MemoService {
 		return memoRepository.findAll();
 	}
 
-	public Memo findByUser(String user) {
-		return memoRepository.findByUserEquals(user);
+	public Memo findByUser(long userId) {
+		return memoRepository.findByUserIdEquals(userId);
 	}
 	
-	public List<Memo> findByKwdAndUser(String kwd, String user) {
+	public List<Memo> findByKwdAndUserId(String kwd, long userId) {
 		List<Memo> mList = new ArrayList<>();
-		List<Memo> result = memoRepository.findByNoteContainingAndUser(kwd, user);
+		List<Memo> result = memoRepository.findByNoteContainingAndUserId(kwd, userId);
 		for(Memo mUnit : result) {
 			mList.add(mUnit);
 		}

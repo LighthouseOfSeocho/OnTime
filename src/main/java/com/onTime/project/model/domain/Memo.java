@@ -20,18 +20,13 @@ public class Memo {
 	@Column(unique = true)
 	private String _Id;
 	private int promiseId; //미팅 제목, 날짜, 시간, 장소, 참여자 정보 등이 존재 
-	private String user;
+	private long userId;
 	private String note;
 	
-	public Memo(int promiseId, String user, String note) {
+	public Memo(int promiseId, long userId, String note) {
 		this.promiseId = promiseId;
-		this.user = user;
+		this.userId = userId;
 		this.note = note;
 	}
 	
-	public Memo(int promiseId, String note) {
-		this.promiseId = promiseId;
-		this.note = note;
-	}
-  
 }

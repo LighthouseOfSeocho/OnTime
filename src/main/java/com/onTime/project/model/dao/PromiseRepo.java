@@ -8,5 +8,5 @@ import com.onTime.project.model.domain.Promise;
 
 public interface PromiseRepo extends CrudRepository<Promise, Integer> {
 	List<Promise> findByRoomHostIdOrderByPromiseTime(String RoomHostId);
-	List<Promise> findByPromiseIdOrderByPromiseTime(int promiseid);
+	Promise findPromiseByPromiseId(int promiseId);
 }

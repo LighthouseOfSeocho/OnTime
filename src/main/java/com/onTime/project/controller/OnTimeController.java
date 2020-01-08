@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Stream;
 
 import javax.servlet.http.HttpSession;
 
@@ -52,6 +51,18 @@ public class OnTimeController {
 	@Autowired
 	private MemoService esService;
 
+	@RequestMapping(value = "/")
+	public ModelAndView index(HttpSession sess, ModelAndView mv) {
+		JSONObject user = (JSONObject) sess.getAttribute("PI");
+		if(user==null) {
+			mv.setViewName("login");
+		}else {
+			mv.addObject("PI", user);
+			mv.setViewName("app");
+		}
+		return mv;
+	}
+	
 	/* Kakao Login */
 	@RequestMapping(value = "/login")
 	public String kakaoLogin() {
@@ -61,7 +72,7 @@ public class OnTimeController {
 
 	@RequestMapping(value = "/oauth")
 	@ResponseBody
-	public ModelAndView getUserInfo(@RequestParam("code") String code, ModelAndView model) {
+	public ModelAndView getUserInfo(@RequestParam("code") String code, ModelAndView model, HttpSession sess) {
 //		System.out.println(((JsonObject) kakaoLoginApi.getUserInfo(kakaoLoginApi.getAccessKakaoToken(code))).toString()); // {"id":"1243182388","nickname":"한우석"}
 		JSONObject kakaoUser = ((JSONObject) kakaoLoginApi.getUserInfo(kakaoLoginApi.getAccessKakaoToken(code)));
 		System.out.println("test1\n");
@@ -76,7 +87,7 @@ public class OnTimeController {
 			model.addObject("PI",kakaoUser);
 			model.setViewName("app");
 		}
-		
+		sess.setAttribute("PI", kakaoUser);
 		model.setViewName("app");
 		System.out.println("test7\n");
 		System.out.println(model);
@@ -177,13 +188,14 @@ public class OnTimeController {
 		return service.getMembers(jsonReq.getPromiseId());
 	}
 
+	
 	@GetMapping(value="/createMemo")
 	@ResponseBody
-	public String createMemo(@RequestParam("promiseId") int promiseId, @RequestParam("user") String user, String note) {
+	public String createMemo(@RequestParam("promiseId") int promiseId, @RequestParam("userId") long userId, String note) {
 		String result;
 		Memo instance = new Memo();
 		instance.setPromiseId(promiseId);
-		instance.setUser(user);
+		instance.setUserId(userId);
 		instance.setNote(note);
 		try {
 			esService.save(instance);
@@ -216,7 +228,7 @@ public class OnTimeController {
 	@SuppressWarnings("null")
 	@GetMapping(value="/searchKwd")
 	@ResponseBody
-	public String searchKwd(@RequestParam("kwd") String kwd, @RequestParam("user") String user){
+	public String searchKwd(@RequestParam("kwd") String kwd, @RequestParam("userId") long userId){
 		String result;
 		String note;
 		Promise promise = null;
@@ -226,7 +238,7 @@ public class OnTimeController {
 		List<Object> allList = new ArrayList<>();
 		
 		try {
-			mList = esService.findByKwdAndUser(kwd, user);
+			mList = esService.findByKwdAndUserId(kwd, userId);
 			System.out.println("1. mList : " + mList );
 			for(Memo mUnit : mList) {
 				System.out.println("2. mUnit : " + mUnit );
