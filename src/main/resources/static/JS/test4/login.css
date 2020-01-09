@@ -1,0 +1,41 @@
+#loginform{
+  position: relative;
+}
+
+.title{
+	height:500px;
+	text-align:center;
+	font-size: 100px;
+	color: #F6F7F3;
+}
+#login{
+    position: absolute;
+    top:90%;
+    left: 26%;
+    margin: 0;
+}
+
+body{
+  background-color:rgb(158, 189, 222);
+}
+.max-small {
+  max-width: 200px; 
+  max-height: 80px;
+}
+
+#kakao {
+  width:200px;
+  height:55px;
+  margin-bottom: 10px;
+}
+
+#naver {
+  width:200px;
+  height:55px;
+  margin-bottom: 10px;
+}
+
+#google {
+  width:200px;
+  height:55px;
+}

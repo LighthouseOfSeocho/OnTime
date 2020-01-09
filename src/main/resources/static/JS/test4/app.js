@@ -37,6 +37,7 @@ let vue = new Vue({
             for(let i = start ; i < end ; i++){
                 result.push(i);
             }
+
             return result;
         },
         setPlace: function(place){
@@ -45,7 +46,6 @@ let vue = new Vue({
             this.createPromise.placeY = place.y;
         },
         selectPromise: function(promise){
-            console.log("Yeaahhhhh");
             this.selectedPromise = promise;
             this.mode = "promise";
         },
@@ -55,15 +55,12 @@ let vue = new Vue({
 
         Popen: function(promiseName) {
             for(var i in this.promises) { // id를 가진 memos 찾기
-                console.log(1231231231, i);
                 if(this.promises[i].promiseName === promiseName) { // id가 같은 memos 찾기
                     this.promises = this.renew(this.promises[i]); // 자바 스크립트에서 = 의 의미는 객체 일때 단순히 내용을 넣어주는것 뿐만 아니라 참조값으로 들어간다 
                     break; //그래서 Prenew 값만 들어가게 변환해야 한다
                 }
             }
             this.mode = "edit";
-            console.log(11111111, this.promises);
-            console.log(2222222, this.mode);
         },
 
         Pwrite: function() { // 함수 method properties
@@ -76,7 +73,6 @@ let vue = new Vue({
                 "placeY" : "",
                 "promiseTime" : "2019-12-27 11:43:19.0"
             }; // 초기화
-            console.log(22222222222, this.promises);
         },
 
         Psave: function() {
@@ -95,7 +91,6 @@ let vue = new Vue({
                         break;
                     }
                 } // 내용 수정 
-                console.log(3333333, this.promises);
             }
 
             this.mode = "list";
@@ -103,7 +98,6 @@ let vue = new Vue({
         },
 
         Premove: function() {
-            console.log(5555555, this.promises);
             if(confirm("정말 삭제하시겠습니까?")){
                 for(var i in this.promises){
                     if(this.promises[i].promiseName === this.promises.promiseName){
@@ -111,7 +105,6 @@ let vue = new Vue({
                         break;
                     }
                 }
-                console.log(4444444444, this.promises);
 
                 this.mode = "list";
                 localStorage.setItem("promises", JSON.stringify(this.promises));
@@ -181,23 +174,21 @@ let vue = new Vue({
                 placeX : this.createPromise.placeX,
                 placeY : this.createPromise.placeY,
                 promiseTime : this.createPromise.promiseDate + " " + this.createPromise.promiseHour + ":" + this.createPromise.promiseMinute + ":00.0"
-            })
-                .then(res=>{
-                    if(res.data){
-                        alert("약속이 생성되었습니다.");
-                        axios.get("/promise", {params:{userId:this.user.id}})
-                            .then(res=>{
-                                this.promises = res.data;
-                            })
-                            .catch(e=>{
-                                console.log(e);
-                            });
-                    } else {
-                        alert("오류 발생");
-                    }
-                }).catch(e=>{
-                    alert(e);
-                });
+            }).then(res=>{
+                if(res.data){
+                    alert("약속이 생성되었습니다.");
+                    axios.get("/promise", {params:{userId:this.user.id}})
+                        .then(res=>{
+                            this.promises = res.data;
+                        }).catch(e=>{
+                            console.log(e);
+                        });
+                } else {
+                    alert("오류 발생");
+                }
+            }).catch(e=>{
+                alert(e);
+            });
         },
         getLocation: function() {
             if(navigator.geolocation) { // GPS를 지원하면
@@ -216,7 +207,7 @@ let vue = new Vue({
         },
         getRoomId: function(){
             var tempElem = document.createElement("textarea");
-            tempElem.value = this.selectedPromise.invitation;  
+            tempElem.value = "http://localhost:9000/" + this.selectedPromise.invitation;
             document.body.appendChild(tempElem);
             tempElem.select();
             document.execCommand("copy");
@@ -235,12 +226,26 @@ let vue = new Vue({
         } else {
             this.Bmemos = JSON.parse(Bmemos);
         }
-        axios.get("/promise", {params:{userId:this.user.id}})
-            .then(res=>{
-                this.promises = res.data;
+        //this.user 값이 없을 경우 즉 null이 아닌경우 싷행
+        if(this.user !== null){
+            console.log("--");
+            axios.get("/promise", {params:{userId:this.user.id}})
+                .then(res=>{
+                    this.promises = res.data;
+                })
+                .catch(e=>{	
+                    console.log(e);
+                });
+        } else {
+            console.log("99999999999----");
+            axios.get("/",{params:{code:this.user.code}})
+            .then(res => {
+            	this.promises = res.data;
+            	console.log(this.promises);
             })
             .catch(e=>{
-                console.log(e);
+            	console.log(e)
             });
+        }
     }
 });

@@ -66,13 +66,13 @@ public class OnTimeService {
 	public List<Promise> getMyPromises(String userId){
 		List<Promise> promises = new ArrayList<>();
 		List<UserPromise> tempList = userPromiseRepo.findByUserId(userId);
-		System.out.println(tempList);
 		if(!tempList.isEmpty()) {
 			for(UserPromise up : tempList) {
 				Optional<Promise> temp = promiseRepo.findById(up.getPromiseId());
 				if(temp.isPresent()) {
 					promises.add(temp.get());
 				}
+
 			}
 		}
 		return promises;
@@ -119,13 +119,15 @@ public class OnTimeService {
 	}
 	
 	//방에 참여중인 멤버
-	public List<String> getMembers(int promiseId){
-		List<String> users = new ArrayList<>();
+	public List<User> getMembers(int promiseId){
+		List<User> users = new ArrayList<>();
 		List<UserPromise> tempList = userPromiseRepo.findByPromiseId(promiseId);
 		if(!tempList.isEmpty()) {
 			for(UserPromise up : tempList) {
-//				Optional<User> temp = userRepo.findById(up.getUserId());
-				users.add(up.getUserId());
+				Optional<User> temp = userRepo.findById(up.getUserId());
+				if(temp.isPresent()) {
+					users.add(temp.get());
+				}
 			}
 		}
 		return users;
@@ -134,7 +136,6 @@ public class OnTimeService {
 	public boolean createPromise(Promise promise) {
 		try {
 			promiseRepo.save(promise);
-			System.out.println(promise.getPromiseId());
 			promise.setInvitation(sha256(promise.getPromiseId()+""));
 			promiseRepo.save(promise);
 			return true;
@@ -157,5 +158,14 @@ public class OnTimeService {
 	//미팅 참가자와 미팅ID 저장
 	public UserPromise createUserPromise(UserPromise userPromise) {
 		return userPromiseRepo.save(userPromise);
+	}
+	
+	// 다른 사람 초대
+	public List<Promise> getCodePromises(String code){
+		List<Promise> promises = new ArrayList<>();
+		List<Promise> tempList = promiseRepo.findPromiseByInvitation(code);
+		System.out.println(tempList.size());
+		System.out.println(tempList.get(0).getPromiseName());
+		return tempList;
 	}
 }
