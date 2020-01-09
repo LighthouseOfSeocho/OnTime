@@ -5,6 +5,26 @@
     text-center
   >
     <p>Welcome, <b>{{ username }}</b>! Select the room or add a new one to chat with other users.</p>
+
+    <form @submit.prevent="subscribe">
+      <v-text-field
+        label="Type a room key"
+        type="text"
+        ref="message"
+        v-model="message"
+      >
+        <template v-slot:append>
+          <v-btn
+            color="primary"
+            @click="subscribe"
+          >
+            Enter a room
+          <v-icon right>keyboard_return</v-icon>
+          </v-btn>
+        </template>
+      </v-text-field>
+    </form>
+
   </v-flex>
 
 </template>
@@ -19,6 +39,14 @@ export default {
   computed: {
     username() {
       return this.$store.getters["main/username"];
+    }
+  },
+  methods: {
+    subscribe() {
+      const roomId = this.message;
+      this.$refs["message"].reset();
+      this.$store.dispatch("main/subscribeRoomUserList", roomId);
+      this.$router.push("/chat/" + roomId);
     }
   }
 };

@@ -33,11 +33,12 @@ export const mutations = {
     state.username = payload;
   },
   addRoom(state, room) {
-    state.roomList.push(room);
+    state.roomList.push(room);  // 더해진 방을 roomList에 추가해서 Rooms에서 확인 가능
+                                // 바깥에 노출되는 state.roomList에 푸시하는 게 아니라 db에 저장해야 함. roomList를 불러 오는 것도 db에서 read
   },
   initRoom(state, roomList) {
     state.roomList = roomList;
-  },
+  }, // 새로운 유저가 접속시 기존 방들을 전부 받아와 보고 접속가능하게 해주는 역할/ 우리는 초대 코드를 통해서만 접속하기 때문에 필요 없을듯?
   subscribe(state, roomKey) {
     subscribe(state, roomKey, true);
   },

@@ -11,6 +11,8 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.onTime.project.chat.domain.Room;
 import com.onTime.project.chat.dto.ChatRoomUserListDto;
@@ -42,8 +44,9 @@ public class ChatController {
         this.messagingTemplate = messagingTemplate;
     }
     
-    @SubscribeMapping("/chat/roomList")
-    public List<SimpleRoomDto> roomList() {
+    @SubscribeMapping("/chat/roomList")	 // 새로운 유저가 서버에 접속시 방 리스트 return 해줌.. 기존 유저가 방 추가시 어떻게 전달 받지? -> computed : getter로 받는다
+    public List<SimpleRoomDto> roomList() {// 해당 메소드는 새로운 유저가 진입할 때 기존 방들을 넘겨주기 위해 존재 함
+    	System.out.println("============ /chat/roomList -> roomService.roomList() 리턴해줌 =================");
         return roomService.roomList();
     }
     
@@ -58,8 +61,8 @@ public class ChatController {
 //        with enabled spring security
 //        final String securityUser = headerAccessor.getUser().getName();
         final String username = (String) headerAccessor.getSessionAttributes().put("username", userRoomKey.userName);
-        final Message joinMessage = new Message(MessageTypes.JOIN, userRoomKey.userName, "");
-        return roomService.addUserToRoom(userRoomKey)
+		final Message joinMessage = new Message(MessageTypes.JOIN, userRoomKey.userName, "");
+		return roomService.addUserToRoom(userRoomKey)
                 .map(userList -> {
                     messagingTemplate.convertAndSend(format("/chat/%s/userList", userList.roomKey), userList);
                     sendMessage(userRoomKey.roomKey, joinMessage);
@@ -70,6 +73,27 @@ public class ChatController {
                     return new ChatRoomUserListDto(userRoomKey.roomKey, HashSet.empty());
                 });
     }
+    
+    @CrossOrigin("*")
+    @RequestMapping("chat/{roomId}/joinCode")
+	public ChatRoomUserListDto userJoinCode(UserRoomKeyDto userRoomKey, SimpMessageHeaderAccessor headerAccessor) {
+//      with enabled spring security
+//      final String securityUser = headerAccessor.getUser().getName();
+    	System.out.println("========================= 접수");
+    	UserRoomKeyDto test = new UserRoomKeyDto("test", "tester");
+		final String username = (String) headerAccessor.getSessionAttributes().put("username", test.userName);
+		final Message joinMessage = new Message(MessageTypes.JOIN, test.userName, "");
+		return roomService.addUserToRoom(test)
+				.map(userList -> { 
+					messagingTemplate.convertAndSend(format("/chat/%s/userList", userList.roomKey), userList);
+					sendMessage(test.roomKey, joinMessage);
+					return userList;
+				})
+				.getOrElseGet(appError -> {
+					log.error("invalid room id...");
+					return new ChatRoomUserListDto(test.roomKey, HashSet.empty());
+				});
+	}
     
     @MessageMapping("/chat/{roomId}/leave")
     public ChatRoomUserListDto userLeaveRoom(UserRoomKeyDto userRoomKey, SimpMessageHeaderAccessor headerAccessor) {

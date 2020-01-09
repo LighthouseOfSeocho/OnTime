@@ -36,6 +36,25 @@ export const actions = {
           const room = JSON.parse(tick.body);
           commit("main/addRoom", room, { root: true });
         });
+        // test
+        const subscribeUrl = "/chat/" + roomId + "/userList";
+        this.stompClient.subscribe(
+          subscribeUrl,
+          tick => {
+            const roomUserList = JSON.parse(tick.body);
+            commit("updateRoomUserList", roomUserList);
+          },
+          { id: roomId + "_userList" }
+        );
+        this.stompClient.subscribe(
+          "/chat/" + roomId + "/messages",
+          tick => {
+            const message = JSON.parse(tick.body);
+            const roomMessage = { roomKey: roomId, message: message };
+            commit("sendMessage", roomMessage);
+          },
+          { id: roomId + "_messages" }
+        );
       },
       error => {
         console.log(error);

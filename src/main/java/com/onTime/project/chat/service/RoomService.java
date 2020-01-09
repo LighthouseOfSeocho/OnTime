@@ -29,6 +29,7 @@ public class RoomService {
     public SimpleRoomDto addRoom(String roomName) {
         final Room room = new Room(roomName);
         final List<Room> roomList = addRoom(room);
+        System.out.println("========== 새로운 방 셍성 ");
         return room.asSimpleRoomDto();
     }
 
