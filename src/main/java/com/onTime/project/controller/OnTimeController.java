@@ -124,7 +124,7 @@ public class OnTimeController {
 // profile : {"sub":"106490326651663334165","name":"han wop","given_name":"han","locale":"ko","family_name":"wop","picture":"https:\/\/lh3.googleusercontent.com\/a-\/AAuE7mA_yoNKgoEfzvS9vauvZedDndxiiZ8uww_x4yPUTw"}
 		JSONObject googleUSer = ((JSONObject) googleLoginApi.getUserProfile(googleLoginApi.getAccessToken(session, code, state)));
 		model.addObject("PI", googleUSer);
-		model.setViewName("redirect : app.html");
+		model.setViewName("app");
 		return model;
 	}
 
@@ -165,7 +165,7 @@ public class OnTimeController {
 	@GetMapping(value = "/promise")
 	@ResponseBody
 	public List<Promise> getMyPromises(@RequestParam String userId) {
-		return service.getMyPromises(userId) == null ? service.getCodePromises(code) , service.getMyPromises(userId);
+		return service.getMyPromises(userId);
 	}
 
 	@PostMapping(value="/promise")

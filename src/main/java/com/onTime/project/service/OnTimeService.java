@@ -164,8 +164,6 @@ public class OnTimeService {
 	public List<Promise> getCodePromises(String code){
 		List<Promise> promises = new ArrayList<>();
 		List<Promise> tempList = promiseRepo.findPromiseByInvitation(code);
-		System.out.println(tempList.size());
-		System.out.println(tempList.get(0).getPromiseName());
 		return tempList;
 	}
 }
