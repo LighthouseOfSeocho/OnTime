@@ -48,14 +48,11 @@
                 <b-button @click="getLocation">내 위치 보기</b-button>
                 <b-button v-b-modal.open-memo>메모하기</b-button>
                 	<b-modal id="open-memo" title="개인 메모" hide-footer>
-                		<form action = "/createMemo" method = "get">
                 			모임 관련된 간단한 메모 작성란 입니다.
          					<br>
-         					<textarea rows = "5" cols = "45" name = "description">세부 내용은 여기 쓰세요.</textarea><br>
-         					<input type="hidden" id="promiseId" name="promiseId" v-model="selectedPromise.promiseId">
-         					<input type="hidden" id="userId" name="userId" v-model="user.id">
-         					<input type = "submit" value = "저장" />
-      					</form>
+         					<textarea v-model="note" rows = "5" cols = "45" id="note" name = "note" placeholder="세부 내용은 여기 쓰세요."></textarea><br>
+         					<button @click="createMemo(); $bvModal.hide('open-memo')" >저장</button>
+      					
                 	</b-modal>
                 		
             </div>

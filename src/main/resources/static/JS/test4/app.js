@@ -215,6 +215,27 @@ let vue = new Vue({
             } else {
               alert('GPS를 지원하지 않습니다');
             }
+          },
+          createMemo: function(){
+          	
+          	console.log("promiseId : ", this.selectedPromise);
+          
+          	
+          	axios.post("/createMemo", {
+                  promiseId : this.selectedPromise.id,
+                  userId: this.user.id,
+                  note: this.note
+              })
+                  .then(res=>{
+                      if(res.data){
+                          alert("메모 작성이 완료되었습니다.");
+                          console.log(res.data);
+                      } else {
+                          alert("오류 발생");
+                      }
+                  }).catch(e=>{
+                      alert(e);
+                  });
           }
     },
 
@@ -235,6 +256,7 @@ let vue = new Vue({
             .catch(e=>{
                 console.log(e);
             })
-    }
+    },
+    
     
 });

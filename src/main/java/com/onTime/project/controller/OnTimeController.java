@@ -189,21 +189,11 @@ public class OnTimeController {
 	}
 
 	
-	@GetMapping(value="/createMemo")
+	@PostMapping(value="/createMemo")
 	@ResponseBody
-	public String createMemo(@RequestParam("promiseId") int promiseId, @RequestParam("userId") long userId, String note) {
-		String result;
-		Memo instance = new Memo();
-		instance.setPromiseId(promiseId);
-		instance.setUserId(userId);
-		instance.setNote(note);
-		try {
-			esService.save(instance);
-			result = "메모 저장 성공";
-		} catch (Exception e) {
-			result = "메모 저장 실패";
-		}
-		return result;
+	public boolean createMemo(@RequestBody Memo memo) {
+		System.out.println(memo);
+		return esService.save(memo);
 	}
 	
 	//모임에 다른 사람 초대 완료시 그 사람 ID와 모임ID mapping

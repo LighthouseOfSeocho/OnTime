@@ -15,9 +15,15 @@ public class MemoService {
 	@Autowired
 	private MemoRepository memoRepository;
 
-	public void save(Memo example) {
-		Memo n = memoRepository.save(example);
-		System.out.println(n);
+	public boolean save(Memo example) {
+		try {
+			Memo n = memoRepository.save(example);
+			System.out.println(n);
+			return true;
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	public Iterable<Memo> findAll() {
