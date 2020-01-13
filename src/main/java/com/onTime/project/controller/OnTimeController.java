@@ -112,7 +112,7 @@ public class OnTimeController {
 			throws IOException, ParseException, InterruptedException, ExecutionException {
 		JSONObject googleUSer = ((JSONObject) googleLoginApi.getUserProfile(googleLoginApi.getAccessToken(session, code, state)));
 		model.addObject("PI", googleUSer);
-		model.setViewName("redirect : app.html");
+		model.setViewName("app");
 		return model;
 	}
 

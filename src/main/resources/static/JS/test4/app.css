@@ -69,6 +69,10 @@ ul, li {
   animation: fade-promise 1s linear forwards;
 }
 
+.end {
+  background-color: rgb(217, 223, 223);
+}
+
 .promise:hover {
   transition: all 0.5s;
   transition-timing-function:ease;
@@ -79,7 +83,7 @@ ul, li {
 
 .promise-status {
   display: inline-block;
-  background-image:url(http://kids.dongascience.com/upload/posting/2018/07/f3e86b80db87d6c964cc21f27575fd60.gif);
+  background-image:url(/img/havetogo.gif);
   background-repeat:no-repeat;
   background-size: cover;
   height:80px; 
@@ -88,6 +92,11 @@ ul, li {
   padding:0; 
   position: absolute;
   right: 5px;
+}
+
+.end > .promise-status {
+  background-image:url(/img/end.gif);
+  background-size: cover;
 }
 
 .app > .body .add-btn {
@@ -105,6 +114,7 @@ ul, li {
   color: gray;
   border: 0;
   border-radius: 50%;
+  z-index: 300;
 }
 
 #my-page-btn {
@@ -135,8 +145,6 @@ ul, li {
 }
 
 #create-promise {
-  display: inline-block;
-  width: 70%;
   margin: 0 auto;
 }
 

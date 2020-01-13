@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link href="JS/test4/app.css" rel="stylesheet" />
     <link href="JS/test4/mypage.css" rel="stylesheet" />
+    <link href="JS/test4/promisepage.css" rel="stylesheet" />
     <title>가즈아앙~</title>
 </head>
 
@@ -39,22 +40,25 @@
             <!-- 내 약속 모두 보기-->
             <div class="list" v-if="mode === 'list'">
                 <ul>
-                    <li class="promise" v-for="promise in promises" @click = "selectPromise(promise)">{{ promise.promiseName }}
+                    <li class="promise" v-for="promise in promises" @click = "selectPromise(promise)" :class="{'end' : getDateTime(promise) < 0}">{{ promise.promiseName }}
                     <span class="promise-status" />
                     </li>
                 </ul>
-                
             </div>
             <!-- 상세내용 표기 -->
-            <div class="write" v-else-if = "mode === 'promise'"> 
+            <div id="promise-page" v-else-if = "mode === 'promise'"> 
+                <h2>{{selectedPromise.promiseName}}</h2>
+                <hr>
+                <h5>{{selectedPromise.placeName}}</h5>
+                {{selectedPromise.address}} <br>
+                {{selectedPromise.promiseTime.substring(0,16)}}<br>
+                <hr>
+                <b-button @click="getLocation">내 위치 보기</b-button> <br>
+                	위도 : {{position.latitude}}<br>
+                	경도 : {{position.longitude}}
+                <h4>참가자</h4>
                 <ul>
-                    <h2>{{selectedPromise.promiseName}}</h2>
-                    위치 : {{selectedPromise.placeName}} <br>
-                    약속 시간 : {{selectedPromise.promiseTime}}
-                </ul>
-                <b-button @click="getLocation">내 위치 보기</b-button>
-                <ul>
-                    <li v-for="member in selectedPromise.members">{{member.userName}}</li>
+                    <li class="participant" v-for="member in selectedPromise.members" v-if="member.userName !=='user.userName'">{{member.userName}}</li>
                 </ul>
             </div>
             <!-- 마이 페이지 -->

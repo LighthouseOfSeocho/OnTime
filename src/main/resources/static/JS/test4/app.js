@@ -13,16 +13,16 @@ let vue = new Vue({
         category : "Personal",
         categories : ["Personal", "Business"],
         createPromise : {
-            "promiseName" : "",
-            "roomHostId" : "",
-            "placeName" : "",
-            "placeX" : "",
-            "placeY" : "",
-            "address" : "",
-            "promiseDate" : "",
-            "promiseTime" : "",
-            "promiseHour" : "",
-            "promiseMinute" : ""
+            promiseName : "",
+            roomHostId : "",
+            placeName : "",
+            placeX : "",
+            placeY : "",
+            address : "",
+            promiseDate : "",
+            promiseTime : "",
+            promiseHour : "",
+            promiseMinute : ""
         },
         searchedPlaces : null,
         promises : "",
@@ -32,9 +32,26 @@ let vue = new Vue({
             friend: null
         },
         hour : ["00","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22","23"],
-        minute : ["00","10","20","30","40","50"]
+        minute : ["00","10","20","30","40","50"],
+        currentTime : {
+            year : new Date().getFullYear(),
+            month : new Date().getMonth()+1,
+            date : new Date().getDate(),
+            hour : new Date().getHours(),
+            minutes : new Date().getMinutes(),
+        },
+        position : {
+            latitude:"",
+            longitude:""
+        }
     },
     methods: { // methods 객체
+        getDateTime: function(promise){
+            let temp=`${this.currentTime.year}-${this.currentTime.month}-${this.currentTime.date} ${this.currentTime.hour}:${this.currentTime.minutes}:00.0`;
+            let present = new Date(temp);
+            let limit = new Date(promise.promiseTime)
+             return limit.getTime() - present.getTime() ;
+        },
         setPlace: function(place){
             this.createPromise.placeName=place.place_name
             this.createPromise.placeX=place.x
@@ -65,7 +82,7 @@ let vue = new Vue({
         },
         create: function(){
             this.createPromise.roomHostId = this.user.id;
-            axios.post("/promise", {
+            axios.post("http://192.168.2.104:9000/promise", {
                 promiseName : this.createPromise.promiseName,
                 roomHostId : this.createPromise.roomHostId,
                 placeName : this.createPromise.placeName,
@@ -77,7 +94,7 @@ let vue = new Vue({
                 .then(res=>{
                     if(res.data){
                         alert("약속이 생성되었습니다.");
-                        axios.get("/promise", {params:{userId:this.user.id}})
+                        axios.get("http://192.168.2.104:9000/promise", {params:{userId:this.user.id}})
                             .then(res=>{
                                 this.promises = res.data;
                             })
@@ -92,22 +109,15 @@ let vue = new Vue({
                 });
         },
         getLocation: function() {
-            if (navigator.geolocation) { // GPS를 지원하면
-              navigator.geolocation.getCurrentPosition(function(position) {
-                alert(position.coords.latitude + ' ' + position.coords.longitude);
-              }, function(error) {
-                console.error(error);
-              }, {
-                enableHighAccuracy: false,
-                maximumAge: 0,
-                timeout: Infinity
-              });
-            } else {
-              alert('GPS를 지원하지 않습니다');
-            }
-          },
+            return new Promise(function(resolve, reject){
+                navigator.geolocation.getCurrentPosition(resolve,reject);
+            }).then(position=>{
+                this.position.latitude = position.coords.latitude;
+                this.position.longitude = position.coords.longitude;
+            })
+        },
         updateUser: function(){
-            axios.put("/user", {
+            axios.put("http://192.168.2.104:9000/user", {
                 id:this.user.userId,
                 userEmail:this.user.userEmail,
                 userName:this.user.userName,
@@ -125,9 +135,14 @@ let vue = new Vue({
                 })
         },
         getMembers: function(promise){
-            axios.get("/promise/members", {params:{promiseId:promise.id}})
+            axios.get("http://192.168.2.104:9000/promise/members", {params:{promiseId:promise.id}})
                 .then(res=>{
-                    promise.members= res.data;
+                    promise.members= [];
+                    res.data.forEach(e=>{
+                        if(e.id !== this.user.id){
+                            promise.members.push(e);
+                        }
+                    })
                 })
                 .catch(e=>{
                     console.log(e)
@@ -149,8 +164,17 @@ let vue = new Vue({
                 }
             }).slice(0,5);
         },
+        renewTime: function(time){
+            setInterval(function(){
+                let temp = new Date();
+                time.month = temp.getMonth()+1;
+                time.date = temp.getDate();
+                time.hour = temp.getHours();
+                time.minutes = temp.getMinutes();
+            }, 60000);
+        },
         logout: function(){
-            axios.get("/logout")
+            axios.get("http:192.168.2.104:9000/logout")
                 .then(res=>{
                 	if(res.data){
                 		this.user=null;
@@ -163,11 +187,11 @@ let vue = new Vue({
                 })
         }
     },
-
-    created: function() { // vue.js가 가지고 있는 기본 메소드, 앱이 처음 생성될때 실행 되는 부분
+    created: async function() { // vue.js가 가지고 있는 기본 메소드, 앱이 처음 생성될때 실행 되는 부분
         this.user = query;
         this.user.userId = query.id;
-        axios.get("/promise", {params:{userId:this.user.userId}})
+        this.renewTime(this.currentTime);
+        await axios.get("http://192.168.2.104:9000/promise", {params:{userId:this.user.userId}})
             .then(res=>{
                 this.promises = res.data;
                 res.data.forEach(promise=>{
@@ -177,5 +201,16 @@ let vue = new Vue({
             .catch(e=>{
                 console.log(e);
             })
+        this.promises.sort(function(a,b){
+            aTime = new Date(a.promiseTime).getTime();
+            bTime = new Date(b.promiseTime).getTime();
+            if(aTime > bTime){
+                return -1;
+            }else if(aTime < bTime){
+                return 1;
+            }else{
+                return 1;
+            }
+        })
     }
 });
