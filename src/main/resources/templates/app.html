@@ -14,6 +14,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script><!-- Latest compiled and minified CSS -->
 
     <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
+    <script src="https://unpkg.com/clipboard@2/dist/clipboard.min.js"></script>
     <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
 
     <!-- Optional theme -->
@@ -26,7 +27,6 @@
     <link href="JS/test4/promisepage.css" rel="stylesheet" />
     <title>가즈아앙~</title>
 </head>
-
 <body>
     <div id="app" class="app">
         <div class="head" v-if="mode != 'myPage'"> 
@@ -94,7 +94,6 @@
             </div>
             <!-- 약속 만들기( Modal ) -->
             <div>
-                <button v-b-modal.create-promise class="add-btn" v-if="mode === 'list'">+</button>
               
                 <b-modal id="create-promise" title="약속 만들기" hide-footer>
                     <div class="modal-body">

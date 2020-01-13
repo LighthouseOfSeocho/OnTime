@@ -86,13 +86,13 @@ public class OnTimeService {
 	public List<Promise> getMyPromises(String userId){
 		List<Promise> promises = new ArrayList<>();
 		List<UserPromise> tempList = userPromiseRepo.findByUserId(userId);
-		System.out.println(tempList);
 		if(!tempList.isEmpty()) {
 			for(UserPromise up : tempList) {
 				Optional<Promise> temp = promiseRepo.findById(up.getPromiseId());
 				if(temp.isPresent()) {
 					promises.add(temp.get());
 				}
+
 			}
 		}
 		return promises;
@@ -157,7 +157,6 @@ public class OnTimeService {
 	public boolean createPromise(Promise promise) {
 		try {
 			promiseRepo.save(promise);
-			System.out.println(promise.getPromiseId());
 			promise.setInvitation(sha256(promise.getPromiseId()+""));
 			promiseRepo.save(promise);
 			return true;
@@ -179,5 +178,14 @@ public class OnTimeService {
 	//미팅 참가자와 미팅ID 저장
 	public UserPromise createUserPromise(UserPromise userPromise) {
 		return userPromiseRepo.save(userPromise);
+	}
+	
+	// 다른 사람 초대
+	public List<Promise> getCodePromises(String code){
+		List<Promise> promises = new ArrayList<>();
+		List<Promise> tempList = promiseRepo.findPromiseByInvitation(code);
+		System.out.println(tempList.size());
+		System.out.println(tempList.get(0).getPromiseName());
+		return tempList;
 	}
 }

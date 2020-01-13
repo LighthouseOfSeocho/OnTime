@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutionException;
 
 import javax.servlet.http.HttpSession;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -159,7 +161,7 @@ public class OnTimeController {
 	@GetMapping(value = "/promise")
 	@ResponseBody
 	public List<Promise> getMyPromises(@RequestParam String userId) {
-		return service.getMyPromises(userId);
+		return service.getMyPromises(userId) == null ? service.getCodePromises(code) , service.getMyPromises(userId);
 	}
 
 	@PostMapping(value="/promise")
@@ -181,7 +183,6 @@ public class OnTimeController {
 		mv.setViewName("redirect:http://192.168.2.104:9000/login");
 		return true;
 	}
-	
 	//모임에 다른 사람 초대 완료시 그 사람 ID와 모임ID mapping
 	@GetMapping(value="/joinPromise")
 	@ResponseBody
@@ -192,7 +193,6 @@ public class OnTimeController {
 		instance.setPromiseId(promiseId);
 		try {
 			service.createUserPromise(instance);
-			System.out.println();
 			result = "미팅 초대 성공";
 		} catch (Exception e) {
 			result = "미팅 초대 실패";
@@ -200,4 +200,13 @@ public class OnTimeController {
 		return result;
 	}
 	
+	@GetMapping(value="/{code}")
+	@ResponseBody
+	public ModelAndView inviteCode(@PathVariable String code, ModelAndView model, HttpSession session){
+		List<Promise> codePromise = service.getCodePromises(code);
+		model.addObject("PI", codePromise);
+		model.setViewName("redirect:http://localhost:9000/");
+		System.out.println(model);
+		return model;
+	}
 }
