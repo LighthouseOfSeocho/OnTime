@@ -1,3 +1,5 @@
+DROP DATABASE lighthouse;
+
 CREATE DATABASE lighthouse;
 
 USE lighthouse;
@@ -21,7 +23,7 @@ CREATE TABLE IF NOT EXISTS lighthouse.PROMISE (
 	place_x DOUBLE,
 	place_y DOUBLE,
 	promise_time DATETIME NOT NULL,
-	amount INT,
+	invitation VARCHAR(255) UNIQUE,
 	FOREIGN KEY (room_host_id) REFERENCES lighthouse.USER(user_id)
 )DEFAULT CHARSET = UTF8;
 
@@ -44,6 +46,7 @@ CREATE TABLE IF NOT EXISTS lighthouse.INVITATION (
 	PRIMARY KEY (sender, recipient, promise_id)
 )DEFAULT CHARSET = UTF8;
 
+ALTER TABLE USER_PROMISE ADD CONSTRAINT uq_user_promise UNIQUE (user_id, promise_id);
 
 DELIMITER //
 CREATE TRIGGER after_create_promise AFTER INSERT ON lighthouse.promise FOR EACH ROW

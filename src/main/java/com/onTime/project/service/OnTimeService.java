@@ -1,13 +1,19 @@
 package com.onTime.project.service;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.hibernate.exception.ConstraintViolationException;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.onTime.project.model.dao.InvitationRepo;
@@ -40,7 +46,9 @@ public class OnTimeService {
 		}
 	}
 	
-	public boolean createUser(String id, String name) {
+	public boolean createUser(JSONObject pi) {
+		String id = pi.get("id").toString();
+		String name = pi.get("nickname").toString();
 		try {
 			userRepo.findById(id).get();
 			return false;
@@ -70,6 +78,7 @@ public class OnTimeService {
 				if(temp.isPresent()) {
 					promises.add(temp.get());
 				}
+
 			}
 		}
 		return promises;
@@ -102,6 +111,19 @@ public class OnTimeService {
 		return promises;
 	}
 	
+	public String sha256(String promiseId) throws NoSuchAlgorithmException {
+		String sha = "";
+		MessageDigest md = MessageDigest.getInstance("SHA-256");
+		md.update(promiseId.getBytes());
+		byte byteData[] = md.digest();
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < byteData.length; i++) {
+            sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
+        }
+        sha = sb.toString();
+        return sha;
+	}
+	
 	//방에 참여중인 멤버
 	public List<User> getMembers(int promiseId){
 		List<User> users = new ArrayList<>();
@@ -120,6 +142,8 @@ public class OnTimeService {
 	public boolean createPromise(Promise promise) {
 		try {
 			promiseRepo.save(promise);
+			promise.setInvitation(sha256(promise.getPromiseId()+""));
+			promiseRepo.save(promise);
 			return true;
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -129,5 +153,21 @@ public class OnTimeService {
 	
 	public User test() {
 		return userRepo.findById("aaa").get();
+	}
+	
+	
+	//promiseId로 방전체 정보 검색
+	public Promise findPromiseByPromiseId(int promiseId) {
+		return promiseRepo.findPromiseByPromiseId(promiseId);
+	}
+	
+	//미팅 참가자와 미팅ID 저장
+	public UserPromise createUserPromise(UserPromise userPromise) throws DataIntegrityViolationException, ConstraintViolationException, SQLIntegrityConstraintViolationException, SQLException {
+		return userPromiseRepo.save(userPromise);
+	}
+	
+	// 다른 사람 초대
+	public Promise getCodePromise(String code){
+		return promiseRepo.findPromiseByInvitation(code);
 	}
 }

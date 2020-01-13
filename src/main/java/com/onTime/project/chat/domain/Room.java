@@ -11,13 +11,13 @@ public class Room {
 	public final String name;
 	public final String key;
 	public final Set<User> users;
-	
+
 	public Room(String name) {
 		this.name = name;
 		this.key = generateKey(name);
-		this.users = HashSet.empty(); 
+		this.users = HashSet.empty();
 	}
-	
+
 	private Room(String name, String key, Set<User> users) {
 		this.name = name;
 		this.key = key;
@@ -38,7 +38,7 @@ public class Room {
 		return new SimpleRoomDto(this.name, this.key);
 	}
 
-	private String generateKey(String roomName) {	// 룸 코드 암호화 생성 추가해보기
+	private String generateKey(String roomName) {
 		return roomName.toLowerCase().trim().replaceAll("\\s+", "-");
 	}
 }

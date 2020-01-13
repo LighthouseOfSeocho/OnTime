@@ -21,6 +21,7 @@ public class UserPromise {
 	private int promiseId;
 	
 	public UserPromise(String userId, int promiseId) {
+		super();
 		this.userId = userId;
 		this.promiseId = promiseId;
 	}

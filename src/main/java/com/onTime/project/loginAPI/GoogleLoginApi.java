@@ -32,7 +32,7 @@ public class GoogleLoginApi {
 	private final static String PROTECTED_RESOURCE_URL = "https://www.googleapis.com/oauth2/v3/userinfo";
 	private final static String REDIRECT_URI = "http://localhost:9000/googleCallback";
 	private final static String SESSION_STATE = "oauth_state";
-	private final static String SCOPE = "email";
+	private final static String SCOPE = "profile";
 	
 	public String getAuthorizationUrl(HttpSession session) {
         String state = generateRandomString();
