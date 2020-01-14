@@ -1,6 +1,7 @@
 package com.onTime.project.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -54,11 +55,13 @@ public class OnTimeController {
 
 	@RequestMapping(value = "/")
 	public ModelAndView index(HttpSession sess, ModelAndView mv) {
-		User user = (User) sess.getAttribute("PI");
-		System.out.println("야야야야야야야야야양양야야야양   "+user);
-		if(user==null) {
+		JSONObject user = (JSONObject) sess.getAttribute("PI");
+//		sess.invalidate();
+		if(user == null) {
+			sess.removeAttribute("PI");
+			sess.invalidate();
 			mv.setViewName("login");
-		}else {
+		} else {
 			mv.addObject("PI", user);
 			mv.setViewName("app");
 		}
@@ -75,10 +78,13 @@ public class OnTimeController {
 	@RequestMapping(value = "/oauth")
 	@ResponseBody
 	public ModelAndView getUserInfo(@RequestParam("code") String code, ModelAndView model, HttpSession sess) {
+//		System.out.println(((JsonObject) kakaoLoginApi.getUserInfo(kakaoLoginApi.getAccessKakaoToken(code))).toString()); 
+//		{"id":"1243182388","nickname":"한우석"}
 		JSONObject kakaoUser = ((JSONObject) kakaoLoginApi.getUserInfo(kakaoLoginApi.getAccessKakaoToken(code)));
-		User user = service.getUser(kakaoUser);
-		sess.setAttribute("PI", user);
-		model.addObject("PI", user);
+		kakaoUser.put("id", "k" + kakaoUser.get("id"));
+		service.createUser(kakaoUser);
+		model.addObject("PI", kakaoUser);
+		sess.setAttribute("PI", kakaoUser);
 		model.setViewName("app");
 		return model;
 	}
@@ -86,15 +92,24 @@ public class OnTimeController {
 	/* Naver Login */
 	@RequestMapping(value = "/loginNaver")
 	public String loginNaver(HttpSession session) {
+//		System.out.println(naverLoginApi.getAuthorizationUrl(session));
 		return "redirect:" + naverLoginApi.getAuthorizationUrl(session);
 	}
 
 	@RequestMapping(value = "/callback")
 	@ResponseBody
-	public ModelAndView callbackNaver(@RequestParam String code, @RequestParam String state, HttpSession session, ModelAndView model)
+	public ModelAndView callbackNaver(@RequestParam String code, @RequestParam String state, HttpSession sess, ModelAndView model)
 			throws IOException, ParseException, InterruptedException, ExecutionException {
-		JSONObject naverUser = ((JSONObject) naverLoginApi.getUserProfile(naverLoginApi.getAccessToken(session, code, state)));
-		model.addObject("PI",naverUser);
+//		System.out.println(((JSONObject) naverLoginApi.getUserProfile(naverLoginApi.getAccessToken(session, code, state))).getClass()); // class org.json.simple.JSONObject
+//		System.out.println(((JSONObject) naverLoginApi.getUserProfile(naverLoginApi.getAccessToken(session, code, state))));
+// {"birthday":"01-08","profile_image":"https:\/\/ssl.pstatic.net\/static\/pwe\/address\/img_profile.png","gender":"M","nickname":"hanwo","name":"한우석","id":"34508534","age":"20-29","email":"gazzari@hanmail.net"}
+		JSONObject naverUser = ((JSONObject) naverLoginApi.getUserProfile(naverLoginApi.getAccessToken(sess, code, state)));
+		JSONObject pi = new JSONObject();
+		pi.put("id", "n" + naverUser.get("id").toString());
+		pi.put("nickname", naverUser.get("nickname").toString());
+		service.createUser(pi);
+		sess.setAttribute("PI", pi);
+		model.addObject("PI",pi);
 		model.setViewName("app");
 		return model;
 	}
@@ -110,10 +125,18 @@ public class OnTimeController {
 
 	@RequestMapping(value = "/googleCallback")
 	@ResponseBody
-	public ModelAndView callbackGoogle(@RequestParam String code, @RequestParam String state, HttpSession session, ModelAndView model)
+	public ModelAndView callbackGoogle(@RequestParam String code, @RequestParam String state, HttpSession sess, ModelAndView model)
 			throws IOException, ParseException, InterruptedException, ExecutionException {
-		JSONObject googleUSer = ((JSONObject) googleLoginApi.getUserProfile(googleLoginApi.getAccessToken(session, code, state)));
-		model.addObject("PI", googleUSer);
+//		System.out.println(((JSONObject) googleLoginApi.getUserProfile(googleLoginApi.getAccessToken(session, code, state))).toString());
+// email : {"sub":"106490326651663334165","email_verified":true,"picture":"https:\/\/lh3.googleusercontent.com\/a-\/AAuE7mA_yoNKgoEfzvS9vauvZedDndxiiZ8uww_x4yPUTw","email":"hanwo2052@gmail.com"}
+// profile : {"sub":"106490326651663334165","name":"han wop","given_name":"han","locale":"ko","family_name":"wop","picture":"https:\/\/lh3.googleusercontent.com\/a-\/AAuE7mA_yoNKgoEfzvS9vauvZedDndxiiZ8uww_x4yPUTw"}
+		JSONObject googleUser = ((JSONObject) googleLoginApi.getUserProfile(googleLoginApi.getAccessToken(sess, code, state)));
+		JSONObject pi = new JSONObject();
+		pi.put("id", "g" + googleUser.get("sub").toString());
+		pi.put("nickname", googleUser.get("name").toString());
+		service.createUser(pi);
+		sess.setAttribute("PI", pi);
+		model.addObject("PI", pi);
 		model.setViewName("app");
 		return model;
 	}
@@ -122,34 +145,6 @@ public class OnTimeController {
 	@ResponseBody
 	public User findUserById(@RequestBody JsonReq jsonReq) {
 		return service.findUserById(jsonReq.getUserId());
-	}
-
-	@PostMapping(value = "/user")
-	@ResponseBody
-	public boolean createUser(@RequestBody JsonReq jsonReq) {
-		return service.createUser(jsonReq.getUserId(), jsonReq.getUserName());
-	}
-	
-	@PutMapping(value ="/user")
-	@ResponseBody
-	public boolean updateUser(@RequestBody User userInfo) {
-		return service.updateUser(userInfo);
-	}
-
-	@GetMapping(value = "/user/invitation")
-	@ResponseBody
-	public List<Promise> getMyInvitation(@RequestBody JsonReq jsonReq) {
-		return service.getInvitedPromises(jsonReq.getUserId());
-	}
-
-	@PostMapping(value = "/promise/invitation")
-	@ResponseBody
-	public boolean invite(@RequestBody Invitation invitation) {
-		try {
-			return service.invite(invitation);
-		} catch (Exception e) {
-			return false;
-		}
 	}
 
 	@PostMapping(value = "/test")
@@ -161,7 +156,7 @@ public class OnTimeController {
 	@GetMapping(value = "/promise")
 	@ResponseBody
 	public List<Promise> getMyPromises(@RequestParam String userId) {
-		return service.getMyPromises(userId) == null ? service.getCodePromises(code) , service.getMyPromises(userId);
+		return service.getMyPromises(userId);
 	}
 
 	@PostMapping(value="/promise")
@@ -175,29 +170,29 @@ public class OnTimeController {
 	public List<User> getMembers(@RequestParam int promiseId){
 		return service.getMembers(promiseId);
 	}
-	
+
+	@GetMapping(value="/{code}")
+	@ResponseBody
+	public ModelAndView inviteCode(@PathVariable String code, ModelAndView model, HttpSession session){
+		JSONObject user = (JSONObject) session.getAttribute("PI");
+		if(user == null) {
+			session.removeAttribute("PI");
+			session.invalidate();
+			model.setViewName("login");
+		} else {
+			joinPromise(user.get("id").toString(), service.getCodePromise(code).getPromiseId());
+			model.addObject("PI", user);
+			model.setViewName("app");
+		}
+		return model;
+	}
+
 	@GetMapping(value="/logout")
 	@ResponseBody
 	public Boolean logout(HttpSession sess, ModelAndView mv) {
 		sess.removeAttribute("PI");
 		mv.setViewName("redirect:http://192.168.2.104:9000/login");
 		return true;
-	}
-	//모임에 다른 사람 초대 완료시 그 사람 ID와 모임ID mapping
-	@GetMapping(value="/joinPromise")
-	@ResponseBody
-	public String joinPromise(@RequestParam("userId") String userId, @RequestParam("promiseId") int promiseId) {
-		String result;
-		UserPromise instance = new UserPromise();
-		instance.setUserId(userId);
-		instance.setPromiseId(promiseId);
-		try {
-			service.createUserPromise(instance);
-			result = "미팅 초대 성공";
-		} catch (Exception e) {
-			result = "미팅 초대 실패";
-		}
-		return result;
 	}
 	
 	@GetMapping(value="/{code}")
@@ -209,4 +204,24 @@ public class OnTimeController {
 		System.out.println(model);
 		return model;
 	}
+	
+	//모임에 다른 사람 초대 완료시 그 사람 ID와 모임ID mapping
+	public void joinPromise(@RequestParam("userId") String userId, @RequestParam("promiseId") int promiseId) {
+		try {
+			service.createUserPromise(new UserPromise(userId, promiseId));
+		} catch (Exception e) {
+			System.out.println("이미 해당 약속이 존재함");
+		}
+	}
+	
+	/*
+	 1. 초대 url 입력
+	 2. 로그인이 안돼있을 경우
+	 	2.1. login.html
+	 ++	2.2. 로그인을 한 후 알아서 약속이 추가된다면 베스트
+	 
+	 3. 로그인이 돼있을 경우
+	 	3.1. app.html
+	 	3.2. 기존 약속들이 다 불러와 지고, 초대 받은 약속이 추가돼야 함
+	 */
 }

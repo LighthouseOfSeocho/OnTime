@@ -20,4 +20,9 @@ public class UserPromise {
 	private String userId;
 	private int promiseId;
 	
+	public UserPromise(String userId, int promiseId) {
+		super();
+		this.userId = userId;
+		this.promiseId = promiseId;
+	}
 }

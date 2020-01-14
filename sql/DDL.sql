@@ -1,3 +1,5 @@
+DROP DATABASE lighthouse;
+
 CREATE DATABASE lighthouse;
 
 USE lighthouse;
@@ -45,6 +47,7 @@ CREATE TABLE IF NOT EXISTS lighthouse.INVITATION (
 	PRIMARY KEY (sender, recipient, promise_id)
 )DEFAULT CHARSET = UTF8;
 
+ALTER TABLE USER_PROMISE ADD CONSTRAINT uq_user_promise UNIQUE (user_id, promise_id);
 
 DELIMITER //
 CREATE TRIGGER after_create_promise AFTER INSERT ON lighthouse.promise FOR EACH ROW

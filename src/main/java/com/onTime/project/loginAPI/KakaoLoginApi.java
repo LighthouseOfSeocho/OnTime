@@ -146,9 +146,11 @@ public class KakaoLoginApi {
 			JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
 			JsonObject kakao_account = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
 			String nickname = properties.getAsJsonObject().get("nickname").getAsString();
+//			String email = kakao_account.getAsJsonObject().get("email").getAsString();
 
 			userInfo.put("id", id);
 			userInfo.put("nickname", nickname);
+//			userInfo.put("email", email);
 //			userInfo.addProperty("gender", gender);
 //			userInfo.put("age", age);
 //			userInfo.addProperty("bday", bday);

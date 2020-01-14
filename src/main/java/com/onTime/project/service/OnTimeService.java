@@ -4,13 +4,16 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.onTime.project.model.dao.InvitationRepo;
@@ -43,7 +46,9 @@ public class OnTimeService {
 		}
 	}
 	
-	public boolean createUser(String id, String name) {
+	public boolean createUser(JSONObject pi) {
+		String id = pi.get("id").toString();
+		String name = pi.get("nickname").toString();
 		try {
 			userRepo.findById(id).get();
 			return false;
@@ -176,16 +181,12 @@ public class OnTimeService {
 	}
 	
 	//미팅 참가자와 미팅ID 저장
-	public UserPromise createUserPromise(UserPromise userPromise) {
+	public UserPromise createUserPromise(UserPromise userPromise) throws DataIntegrityViolationException, ConstraintViolationException, SQLIntegrityConstraintViolationException, SQLException {
 		return userPromiseRepo.save(userPromise);
 	}
 	
 	// 다른 사람 초대
-	public List<Promise> getCodePromises(String code){
-		List<Promise> promises = new ArrayList<>();
-		List<Promise> tempList = promiseRepo.findPromiseByInvitation(code);
-		System.out.println(tempList.size());
-		System.out.println(tempList.get(0).getPromiseName());
-		return tempList;
+	public Promise getCodePromise(String code){
+		return promiseRepo.findPromiseByInvitation(code);
 	}
 }
