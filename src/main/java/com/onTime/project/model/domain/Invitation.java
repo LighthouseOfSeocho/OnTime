@@ -33,17 +33,13 @@ public class Invitation {
 	}
 
 	public String getRecipient() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public Integer getPromiseId() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public void setInviteTime(String format) {
-		// TODO Auto-generated method stub
-		
 	}
 }

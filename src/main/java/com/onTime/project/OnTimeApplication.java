@@ -14,8 +14,6 @@ import io.vavr.jackson.datatype.VavrModule;
 @EnableElasticsearchRepositories(basePackages="com.onTime.project.model.dao")
 @EntityScan({"com.onTime.project.model.domain"})
 @SpringBootApplication
-//@EnableJpaRepositories(basePackages= {"com.onTime.project.model.dao"})
-//@EntityScan("com.onTime.project.model.domain")
 @ComponentScan({"com.onTime.project.domain","com.onTime.project.controller","com.onTime.project.loginAPI","com.onTime.project.model.dao","com.onTime.project.model.domain","com.onTime.project.service","com.onTime.project.test","com.onTime.project.chat.*","com.onTime.project.app.*", "com.ontime.project.model.es.*"})
 public class OnTimeApplication {
 

@@ -1,0 +1,8 @@
+#promise-page {
+    text-align: center;
+    padding: 30px 20px 30px 20px
+}
+
+#promise-page > ul {
+	list-style: none;
+}

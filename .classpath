@@ -31,5 +31,16 @@
 	<classpathentry kind="lib" path="C:/0.encore/00.lib/ojdbc6.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Playdata/Downloads/lombok.jar"/>
 	<classpathentry kind="lib" path="C:/0.encore/00.lib/mariadb-java-client-2.5.2-sources.jar"/>
+	<classpathentry kind="src" path="target/generated-sources/annotations">
+		<attributes>
+			<attribute name="optional" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" output="target/test-classes" path="target/generated-test-sources/test-annotations">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="test" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
