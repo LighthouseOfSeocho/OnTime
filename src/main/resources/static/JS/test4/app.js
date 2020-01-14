@@ -43,14 +43,24 @@ let vue = new Vue({
         position : {
             latitude:"",
             longitude:""
-        }
+        },
+        testId : ""
     },
     methods: { // methods 객체
         getDateTime: function(promise){
             let temp=`${this.currentTime.year}-${this.currentTime.month}-${this.currentTime.date} ${this.currentTime.hour}:${this.currentTime.minutes}:00.0`;
             let present = new Date(temp);
             let limit = new Date(promise.promiseTime)
-             return limit.getTime() - present.getTime() ;
+            return (limit.getTime() - present.getTime())/1000/60 ;
+        },
+        getPromises: function(status){
+            let promises = [];
+            this.promises.forEach(promise=>{
+                if(promise.status===status){
+                    promises.push(promise);
+                }
+            })
+            return promises;
         },
         setPlace: function(place){
             this.createPromise.placeName=place.place_name
@@ -82,7 +92,7 @@ let vue = new Vue({
         },
         create: function(){
             this.createPromise.roomHostId = this.user.id;
-            axios.post("http://192.168.2.104:9000/promise", {
+            axios.post("http://localhost:9000/promise", {
                 promiseName : this.createPromise.promiseName,
                 roomHostId : this.createPromise.roomHostId,
                 placeName : this.createPromise.placeName,
@@ -94,7 +104,7 @@ let vue = new Vue({
                 .then(res=>{
                     if(res.data){
                         alert("약속이 생성되었습니다.");
-                        axios.get("http://192.168.2.104:9000/promise", {params:{userId:this.user.id}})
+                        axios.get("http://localhost:9000/promise", {params:{userId:this.user.id}})
                             .then(res=>{
                                 this.promises = res.data;
                             })
@@ -114,10 +124,48 @@ let vue = new Vue({
             }).then(position=>{
                 this.position.latitude = position.coords.latitude;
                 this.position.longitude = position.coords.longitude;
+                this.updateLocation();
             })
         },
+        arrive: function() {
+            if(this.computeDistance(this.position.latitude,this.position.longitude,this.selectedPromise)<=0.2){
+                let temp = {
+                    userId:this.user.userId,
+                    promiseId:this.selectedPromise.promiseId
+                }
+                // 정시 도착
+                if(this.getTime(this.selectedPromise)>0){
+                    temp.arrival = 1;
+                }else{
+                    //지각
+                    temp.arrival = 0;
+                }
+                axios.put("http://localhost:9000/user/arrival",temp)
+                    .then(res=>{
+                        alert('도착처리 되었습니다')
+                    })
+                    .catch(e=>{
+                        alert('실패')
+                    })
+            }else{
+                alert('도착 후 시도해주세요')
+            }
+        },
+        updateLocation: function(){
+            axios.put("http://localhost:9000/user/position",{
+                userId:this.user.userId,
+                //promiseId:this.selectedPromise.promiseId,
+                latitude:this.position.latitude,
+                longitude:this.position.longitude
+            })
+                .then(res=>{
+                    //alert('수정되었습니다.')
+                }).catch(e=>{
+                    alert(e)
+                })
+        },
         updateUser: function(){
-            axios.put("http://192.168.2.104:9000/user", {
+            axios.put("http://localhost:9000/user", {
                 id:this.user.userId,
                 userEmail:this.user.userEmail,
                 userName:this.user.userName,
@@ -135,12 +183,17 @@ let vue = new Vue({
                 })
         },
         getMembers: function(promise){
-            axios.get("http://192.168.2.104:9000/promise/members", {params:{promiseId:promise.id}})
+            axios.get("http://localhost:9000/promise/members", {params:{promiseId:promise.id}})
                 .then(res=>{
                     promise.members= [];
                     res.data.forEach(e=>{
-                        if(e.id !== this.user.id){
-                            promise.members.push(e);
+                        promise.members.push(e);
+                        if(e.userId === this.user.id){
+                            if(e.arrival && e.arrival===1){
+                                promise.arrival='1'
+                            }else{
+                                promise.arrival='0'
+                            }
                         }
                     })
                 })
@@ -174,29 +227,59 @@ let vue = new Vue({
             }, 60000);
         },
         logout: function(){
-            axios.get("http:192.168.2.104:9000/logout")
+            axios.get("http://localhost:9000/logout")
                 .then(res=>{
                 	if(res.data){
                 		this.user=null;
                 		alert('로그아웃 되었습니다');
-                		window.location.href = 'http://192.168.2.104:9000/';            		
+                		window.location.href = 'http://localhost:9000/';            		
                 	}
                 })
                 .catch(e=>{
                     alert('로그아웃 실패')
                 })
+        },
+        // 반환 거리 단위 (km)
+        computeDistance: function (memberLatitude,memberLongitude, promise) {
+            if(memberLatitude && memberLongitude){
+                var startLatRads = this.degreesToRadians(memberLatitude);
+                var startLongRads = this.degreesToRadians(memberLongitude);
+                var destLatRads = this.degreesToRadians(promise.placeY);
+                var destLongRads = this.degreesToRadians(promise.placeX);
+    
+                var Radius = 6371; //지구의 반경(km)
+                var distance = Math.acos(Math.sin(startLatRads) * Math.sin(destLatRads) + 
+                                Math.cos(startLatRads) * Math.cos(destLatRads) *
+                                Math.cos(startLongRads - destLongRads)) * Radius;
+                return distance.toFixed(2);
+
+            }else{
+                return "-";
+            }
+        },
+
+        degreesToRadians: function (degrees) {
+            radians = (degrees * Math.PI)/180;
+            return radians;
         }
     },
     created: async function() { // vue.js가 가지고 있는 기본 메소드, 앱이 처음 생성될때 실행 되는 부분
         this.user = query;
         this.user.userId = query.id;
         this.renewTime(this.currentTime);
-        await axios.get("http://192.168.2.104:9000/promise", {params:{userId:this.user.userId}})
+        await axios.get("http://localhost:9000/promise", {params:{userId:this.user.userId}})
             .then(res=>{
                 this.promises = res.data;
                 res.data.forEach(promise=>{
                     this.getMembers(promise);
-                })
+                    if(this.getDateTime(promise)<0){
+                        promise.status = "end";
+                    }else if(this.getDateTime(promise)<60*24){
+                        promise.status = "today";
+                    }else{
+                        promise.status = "upcoming";
+                    }
+                });
             })
             .catch(e=>{
                 console.log(e);
@@ -212,5 +295,6 @@ let vue = new Vue({
                 return 1;
             }
         })
+        this.getLocation();
     }
 });

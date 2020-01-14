@@ -8,5 +8,9 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "clipboard": "^2.0.4",
+    "vue-clipboard2": "^0.3.1"
+  }
 }

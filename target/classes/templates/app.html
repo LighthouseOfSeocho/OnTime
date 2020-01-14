@@ -8,85 +8,152 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=d9e5153543b0702bf46e22f4f22c32e7&libraries=services"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script><!-- Latest compiled and minified CSS -->
+
+    <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
+    <script src="https://unpkg.com/clipboard@2/dist/clipboard.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
 
     <!-- Optional theme -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap-theme.min.css" integrity="sha384-6pzBo3FDv/PJ8r2KRkGHifhEocL+1X2rVCTTkUfGk7/0pbek5mMa1upzvWbrUbOZ" crossorigin="anonymous">
 
     <!-- Latest compiled and minified JavaScript -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link href="JS/test4/app.css" rel="stylesheet" />
+    <link href="JS/test4/mypage.css" rel="stylesheet" />
+    <link href="JS/test4/promisepage.css" rel="stylesheet" />
     <title>가즈아앙~</title>
 </head>
-
 <body>
-      
-
     <div id="app" class="app">
-        <div class="head"> 
-            <span class="title"> On-Time </span><br>
-            <button v-for='c in categories' :class="{ 'active' : category === c }" @click="category = c">{{ c }}</button>
-            <span class="list-btn" v-if = "mode !== 'list'" @click = "mode = 'list'"> &lt; </span>
+        <div class="head" v-if="mode != 'myPage'"> 
+            <div>
+	            <span v-for='c in categories' class="category-btn" :class="{ 'active' : category === c }" @click="category = c"><b>{{ c }}</b></span>            
+            </div>
+            <button id="my-page-btn" class="" @click="setModeMyPage()"></button>
         </div>
+        <span class="list-btn" v-if = "mode !== 'list'" @click = "mode = 'list'"> &lt; </span>
         <div class="body" v-if="category === 'Personal'">
+            <!-- 내 약속 모두 보기-->
             <div class="list" v-if="mode === 'list'">
                 <ul>
-                    <li v-for="m in Pmemos" @click = "Popen(m.title)">{{ m.title }}</li>
+                    <li class="promise today" v-for="promise in getPromises('today')" @click = "selectPromise(promise)">{{ promise.promiseName }}
+                    <!-- <span class="promise-status" /> -->
+                    </li>
+                </ul>
+                <h5>앞으로의 약속</h5>
+                <ul>
+                    <li class="promise upcoming" v-for="promise in getPromises('upcoming')" @click = "selectPromise(promise)">{{ promise.promiseName }}
+                    <!-- <span class="promise-status" /> -->
+                    </li>
+                </ul>
+                <h5>지난 약속</h5>
+                <ul>
+                    <li class="promise end" v-for="promise in getPromises('end')" @click = "selectPromise(promise)">{{ promise.promiseName }}
+                    <!-- <span class="promise-status" :class="{'late': promise.arrival==='ontime'}" /> -->
+                    </li>
                 </ul>
             </div>
-            <div class="write" v-else> <!-- 상세내용 표기 -->
-                <textarea v-model = "memo.title"></textarea>
-                <button class="save-btn" type="button" @click="Psave()" :class = "{ 'full' : mode === 'write' }">저장</button> <!-- 버튼 동적으로 만들기 -->
-                <button class="remove-btn" type="button" @click="Premove()" v-if="mode === 'edit'">삭제</button>
+            <!-- 상세내용 표기 -->
+            <div id="promise-page" v-else-if = "mode === 'promise'"> 
+                <h2>{{selectedPromise.promiseName}}</h2>
+                <hr>
+                <h5>{{selectedPromise.placeName}}</h5>
+                {{selectedPromise.address}} <br>
+                {{selectedPromise.promiseTime.substring(0,16)}}<br>
+                <hr>
+                <div class="btn-wrapper" v-if="selectedPromise.status !=='end'">
+                    <b-button @click="getLocation">내 위치 갱신</b-button>
+                    <b-button @click="arrive">도착 신고</b-button> <br>
+                </div>
+                <h4>참가자</h4>
+                <ul>
+                    <li class="participant" v-for="member in selectedPromise.members">{{member.userName}} <span v-if="selectedPromise.status !=='end'">{{computeDistance(member.latitude,member.longitude,selectedPromise)}} km</span></li>
+                </ul>
             </div>
-            <button class="btn btn-toggle add-btn" type="button" data-toggle="modal" data-target="#myModal" v-if="mode === 'list'"> + </button>
-            <!-- Modal -->
-            <div class="modal fade" id="myModal" role="modal">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                    <div class="modal-header">
-                        <h2>약속 만들기</h2>
-                    </div>
+            <!-- 마이 페이지 -->
+            <div id="my-page-wrapper" v-else-if="mode==='myPage'">
+	            <div class="my-page">
+	                <h1> {{user.userName}}</h1><hr>
+	                <p>메일 
+	                <button id="modify" @click="updateUser">수정</button>
+	                </p> 
+	                <input type="text" class="my-page-input" v-model="user.userEmail" max="100" min="1" placeholder="이메일을 입력해주세요">
+	                <p>성별</p>
+	                <input type="text" class="my-page-input" v-model="user.userGender" max="100" min="1" placeholder="Null select box로 바꾸자">
+	                <p>나이</p>
+	                <input type="text" class="my-page-input" v-model="user.userAge" max="100" min="1" placeholder="나이를 입력해주세요">
+	                <p>연락처</p>
+	                <input type="text" class="my-page-input" v-model="user.userPhone" placeholder="전화번호를 입력해주세요 010-0000-0000">
+	                <br><hr>
+	                <h3>자주 가는 장소</h3>
+	                <table>
+	                    <tr>
+	                        <td v-for="place in favorite.place"><div class="favorite">{{place}}</div></td>
+	                    </tr>
+	                </table>
+	                <br>
+	                <h3>자주 만나는 사람</h3>
+	                <table>
+	                    <tr>
+	                        <td v-for="f in favorite.friend"><div class="favorite">{{f}}</div></td>
+	                    </tr>
+	                </table>
+	            </div>
+	            <button id="logout-btn" @click="logout()">로그아웃</button>
+            </div>
+            <!-- 약속 만들기( Modal ) -->
+            <div>
+                <button v-b-modal.create-promise class="add-btn" v-if="mode === 'list'">+</button>
+                <b-modal id="create-promise" title="약속 만들기" hide-footer>
                     <div class="modal-body">
                         <p>약속이름 :</p>
-                        <input v-model="createPromise.promiseName" placeholder="약속이름">
+                        <input v-model="createPromise.promiseName" placeholder="약속이름" required>
                         <p>약속장소명 :</p>
-                        <input v-model="createPromise.placeName" placeholder="약속장소명">
-                        <p>약속시간 :</p>
-                        <input v-model="createPromise.promiseTime" placeholder="약속시간">
+                        
+                        <!-- 카카오 맵 -->
+                        <div id="menu_wrap" class="bg_white">
+                            <div class="option">
+                                <div>
+                                    <form onsubmit="searchPlaces(); return false;">
+                                        검색 : <input type="text" value="이태원 맛집" id="keyword" size="15"> 
+                                        <button type="submit">검색하기</button> 
+                                    </form>
+                                    {{createPromise.placeName}}
+                                </div>
+                            </div>
+                            <hr>
+                            <ol id="placesList">
+                                <li v-for="place in searchedPlaces" @click="setPlace(place)">{{place.place_name}}</li>
+                            </ol>
+                        </div>
+                        <p>날짜 : </p>
+                        <input type="date" v-model="createPromise.promiseDate" required>
+                        <p>시간 :
+                        <select v-model="createPromise.promiseHour">
+                            <option v-for="h in hour">{{h}}</option>
+                        </select> 시  
+                        <select v-model="createPromise.promiseMinute">
+                            <option v-for="m in minute">{{m}}</option>
+                        </select> 분
+                        <b-button class="mt-3" block @click="create(); $bvModal.hide('create-promise')">만들기</b-button>
                     </div>
-                    <div class="modal-footer">
-                        <button @click="printInfo(this.query)">만들기</button>
-                    </div>
-                    </div>
-                </div>
+                </b-modal>
             </div>
+            
         </div>
 
-        <div class="body" v-if="category === 'Business'">
-            <div class="list" v-if="mode === 'list'">
-                <ul>
-                    <li v-for="m in Bmemos" @click = "Bopen(m.id)">{{ m.title }}</li>
-                </ul>
-            </div>
-            <div class="write" v-else> <!-- 상세내용 표기 -->
-                <textarea v-model = "memo.title"></textarea>
-                <button class="save-btn" type="button" @click="Bsave()" :class = "{ 'full' : mode === 'write' }">저장</button> <!-- 버튼 동적으로 만들기 -->
-                <button class="remove-btn" type="button" @click="Bremove()" v-if="mode === 'edit'">삭제</button>
-            </div>
-            <button class="add-btn" type="button" @click="Bwrite()" v-if="mode === 'list'"> + </button>
-        </div> 
     </div>
-    
-
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var query = /*[[${PI}]]*/ 'default';
+        /*]]>*/
+    </script>
     <script src="JS/test4/app.js"></script>
+    <script src="JS/test4/map.js"></script>
 </body>
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    var query = /*[[${PI}]]*/ 'default';
-    /*]]>*/
-</script>
 
 </html>

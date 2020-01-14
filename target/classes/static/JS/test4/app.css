@@ -1,32 +1,43 @@
+body {
+  height: 100%;
+  background-color: rgb(243, 242, 242);
+}
+
+ul, li {
+  padding: 0 0 0 0;
+  margin: 0 0 0 0;
+}
+
 .app > .head {
+  position: relative;
   padding: 10px;
-  background: lightskyblue;
-  border-bottom: 1px solid #ddd;
+  background: rgb(126, 205, 241);
+  border-bottom: 1px solid white;
   text-align: center;
   position: relative;
 }
 
-.app > .head .title{
-  font-size: 20px;
-  color:  dimgray;
-  font-weight: bold;
-}
-
-.app > .head button {
-  background: gold;
-  border: 1px solid black;
+.category-btn {
+  display: inline-block;
+  background: transparent;
+  border-width: 0 0 0 0;
   padding: 7px;
   cursor: pointer;
-  width: 45%;
-  margin: 7px;
+  width: 30%;
+  height: 50px;
+  margin: 10%;
+  margin-top: 60px;
+  color: white;
 }
 
-.app > .head button.active {
-  background: cadetblue;
-  color :white;
+.category-btn.active {
+  background: transparent;
+  border-bottom-color: white;
+  border-bottom: 5px solid rgb(62, 235, 220);
 }
 
-.app > .head .list-btn { 
+.list-btn { 
+  border-width: 0 0 0 0;
   position: absolute;
   left: 0;
   top: 0;
@@ -36,22 +47,65 @@
   line-height: 0;
 }
 
-.app > .body ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.list {
+  margin-top: -20px;
 }
 
-.app > .body ul li {
+.promise {
+  position: relative;
+  background-color: white;
+  text-align: center;
+  list-style: none;
+  width: 90%;
+  height: 80px;
+  margin-left: 5%;
   padding: 20px;
   font-size: 16px;
-  border-bottom: 1px solid #ddd;
+  line-height: 40px;
   cursor: pointer;
+  border-radius: 20px;
+  margin-top: 5px;
+  z-index: 200;
+  animation: fade-promise 1s linear forwards;
+}
+
+.end {
+  background-color: rgb(217, 223, 223);
+}
+
+.promise:hover {
+  transition: all 0.5s;
+  transition-timing-function:ease;
+  margin-left: 2.5%;
+  width: 95%;
+  font-size: 25px;
+}
+
+.promise-status {
+  display: inline-block;
+  background-image:url(/img/havetogo.gif);
+  background-repeat:no-repeat;
+  background-size: cover;
+  height:80px; 
+  width:80px; 
+  margin:-20px 0 -20px 0; 
+  padding:0; 
+  position: absolute;
+  right: 5px;
+}
+
+.end > .promise-status {
+  background-image:url(/img/end.gif);
+  background-size: cover;
 }
 
 .app > .body .add-btn {
+  padding: 0 0 0 0;
   display: inline-block;
-  padding: 29px 19px 29px 19px;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  line-height: 0px;
   font-size: 38px;
   position: fixed;
   right: 10px;
@@ -60,41 +114,50 @@
   color: gray;
   border: 0;
   border-radius: 50%;
-  line-height: 0;
-  outline: 0;
+  z-index: 300;
 }
 
-.app > .body > .write {
-  margin: 10px;
+#my-page-btn {
+  background-image : url(/img/mypage.svg);
+  background-color : transparent;
+  display : inline-block;
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 35px;
+  width: 35px;
+  z-index: 3;
+  border-width: 0 0 0 0;
+  border-radius:75px;
+  margin: 30px 15px 0 0;
 }
 
-.app > .body > .write textarea {
-  width: 100%;
-  height: 250px;
-  max-width: 100%;
-  font-size: 16px;
-  padding: 10px;
-  box-sizing: border-box;
-  margin-bottom: 10px;
+#map {
+  position: relative;
+  background-color: pink;
+  width: 60%;
+  padding-bottom: 60%;
+  overflow:hidden;
 }
 
-.app > .body > .write button{
-  width: 49%;
-  color: white;
-  padding: 15px;
-  border: 0;
-  margin-bottom: 10px;
+#placesList {
+  height: 140px;
 }
 
-.app > .body > .write .save-btn.full {
-  width: 100%;
+#create-promise {
+  margin: 0 auto;
 }
 
-.app > .body > .write .save-btn {
-  background: olive;
-}
 
-.app > .body > .write .remove-btn {
-  background: black;
-  float: right;
+@keyframes fade-promise {
+  from {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(40px);
+  }
+  to { 
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
 }

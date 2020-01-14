@@ -19,7 +19,9 @@ public class UserPromise {
 	private int id;
 	private String userId;
 	private int promiseId;
-	
+	private Float longitude;
+	private Float latitude;
+	private Integer arrival;
 	public UserPromise(String userId, int promiseId) {
 		super();
 		this.userId = userId;

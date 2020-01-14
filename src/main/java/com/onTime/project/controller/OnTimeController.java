@@ -1,21 +1,16 @@
 package com.onTime.project.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import javax.servlet.http.HttpSession;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,7 +25,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.onTime.project.loginApi.GoogleLoginApi;
 import com.onTime.project.loginApi.KakaoLoginApi;
 import com.onTime.project.loginApi.NaverLoginApi;
-import com.onTime.project.model.domain.Invitation;
 import com.onTime.project.model.domain.JsonReq;
 import com.onTime.project.model.domain.Promise;
 import com.onTime.project.model.domain.User;
@@ -146,13 +140,25 @@ public class OnTimeController {
 	public User findUserById(@RequestBody JsonReq jsonReq) {
 		return service.findUserById(jsonReq.getUserId());
 	}
-
-	@PostMapping(value = "/test")
-	public String findMyHostedPromise(@RequestBody JsonReq jsonReq) {
-		System.out.println(jsonReq);
-		return jsonReq.getUserId();
+	
+	@PutMapping(value ="/user")
+	@ResponseBody
+	public boolean updateUser(@RequestBody User userInfo) {
+		return service.updateUser(userInfo);
+	}
+	
+	@PutMapping(value="/user/position")
+	@ResponseBody
+	public boolean updateUserLocation(@RequestBody JsonReq jsonReq) {
+		return service.updateUserLocation(jsonReq);
 	}
 
+	@PutMapping(value = "/user/arrival")
+	@ResponseBody
+	public boolean checkArrival(@RequestBody JsonReq jsonReq) {
+		return service.checkArrival(jsonReq);
+	}
+	
 	@GetMapping(value = "/promise")
 	@ResponseBody
 	public List<Promise> getMyPromises(@RequestParam String userId) {
@@ -191,18 +197,8 @@ public class OnTimeController {
 	@ResponseBody
 	public Boolean logout(HttpSession sess, ModelAndView mv) {
 		sess.removeAttribute("PI");
-		mv.setViewName("redirect:http://192.168.2.104:9000/login");
+		mv.setViewName("redirect:http://localhost:9000/login");
 		return true;
-	}
-	
-	@GetMapping(value="/{code}")
-	@ResponseBody
-	public ModelAndView inviteCode(@PathVariable String code, ModelAndView model, HttpSession session){
-		List<Promise> codePromise = service.getCodePromises(code);
-		model.addObject("PI", codePromise);
-		model.setViewName("redirect:http://localhost:9000/");
-		System.out.println(model);
-		return model;
 	}
 	
 	//모임에 다른 사람 초대 완료시 그 사람 ID와 모임ID mapping
@@ -213,15 +209,4 @@ public class OnTimeController {
 			System.out.println("이미 해당 약속이 존재함");
 		}
 	}
-	
-	/*
-	 1. 초대 url 입력
-	 2. 로그인이 안돼있을 경우
-	 	2.1. login.html
-	 ++	2.2. 로그인을 한 후 알아서 약속이 추가된다면 베스트
-	 
-	 3. 로그인이 돼있을 경우
-	 	3.1. app.html
-	 	3.2. 기존 약속들이 다 불러와 지고, 초대 받은 약속이 추가돼야 함
-	 */
 }

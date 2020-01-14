@@ -21,6 +21,7 @@ import com.onTime.project.model.dao.PromiseRepo;
 import com.onTime.project.model.dao.UserPromiseRepo;
 import com.onTime.project.model.dao.UserRepo;
 import com.onTime.project.model.domain.Invitation;
+import com.onTime.project.model.domain.JsonReq;
 import com.onTime.project.model.domain.Promise;
 import com.onTime.project.model.domain.User;
 import com.onTime.project.model.domain.UserPromise;
@@ -76,6 +77,31 @@ public class OnTimeService {
 		if(userRepo.findById(userInfo.getUserId()).isPresent()) {
 			userRepo.save(userInfo);
 			System.out.println(userInfo);
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
+	public boolean updateUserLocation(JsonReq jsonReq) {
+		List<UserPromise> temp = userPromiseRepo.findByUserId(jsonReq.getUserId());
+		if(!temp.isEmpty()) {
+			for(UserPromise up:temp) {
+				up.setLatitude(jsonReq.getLatitude());
+				up.setLongitude(jsonReq.getLongitude());
+				userPromiseRepo.save(up);
+			}
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
+	public boolean checkArrival(JsonReq jsonReq) {
+		UserPromise temp = userPromiseRepo.findByUserIdAndPromiseId(jsonReq.getUserId(), jsonReq.getPromiseId());
+		if(temp != null) {
+			temp.setArrival(jsonReq.getArrival());
+			userPromiseRepo.save(temp);
 			return true;
 		}else {
 			return false;
