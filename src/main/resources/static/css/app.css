@@ -4,6 +4,7 @@ body {
 }
 
 ul, li {
+  animation: fade-promise 1s linear forwards;
   padding: 0 0 0 0;
   margin: 0 0 0 0;
 }
@@ -18,7 +19,6 @@ ul, li {
   background: rgb(126, 205, 241);
   border-bottom: 1px solid white;
   text-align: center;
-  position: relative;
 }
 
 .category-btn {
@@ -56,6 +56,7 @@ ul, li {
 }
 
 .name {
+	animation: fade-promise 1s linear forwards;
 	position: relative;
 	margin: 0 0 0 0;
 	text-align: center;
@@ -73,14 +74,15 @@ ul, li {
 #no-promise {
   display: inline-block;
   text-align: center;
-  width:40%; 
-  height: 150px;
+  width:166px; 
+  height: 152px;
   margin:0 0 0 0; 
   padding:0; 
   position: absolute;
   left: 30%;
-  background-image:url(/img/nopromise.gif);
+  background-image:url(/img/upcoming.gif);
   background-size: cover;
+  top : 50%
 }
 
 .promise {
@@ -98,7 +100,6 @@ ul, li {
   border-radius: 20px;
   margin-top: 5px;
   z-index: 200;
-  animation: fade-promise 1s linear forwards;
 }
 
 .today {
@@ -108,6 +109,7 @@ ul, li {
   -webkit-animation-timing-function: ease;
   -webkit-animation-direction: alternate;
   -webkit-animation-duration: 2s;
+  padding-top : 15px
 
 }
 
@@ -180,7 +182,7 @@ ul, li {
   background-image : url(/img/mypage.svg);
   background-color : transparent;
   display : inline-block;
-  position: fixed;
+  position: absolute;
   top: 0;
   right: 0;
   height: 35px;
@@ -226,7 +228,7 @@ ul, li {
     border:solid 3px transparent;
   }
   to {
-    border:solid 3px;
+    border:solid 7px;
     border-color: rgb(126, 205, 241); 
 
   }

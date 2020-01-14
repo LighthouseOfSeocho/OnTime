@@ -35,29 +35,38 @@
             </div>
             <button id="my-page-btn" class="" @click="setModeMyPage()"></button>
         </div>
-        <span class="list-btn" v-if = "mode !== 'list'" @click = "mode = 'list'"> &lt; </span>
+        <span class="list-btn" v-if = "mode !== 'list'" @click = "mode = 'list'"> &lt </span>
         <div class="body" v-if="category === 'Personal'">
             <!-- 내 약속 모두 보기-->
-            <div class="list" v-if="mode === 'list'">
-            	<h5 class = "name">Right Now</h5>
+            <div class="list" v-if="mode === 'list' && promises.length!==0">
+            	<h5 class = "name" v-for="promises in getPromises('today')" v-if="promises.status === 'today'">Right Now</h5>
                 <ul>
                     <li class="promise today" v-for="promise in getPromises('today')" @click = "selectPromise(promise)">{{ promise.promiseName }}
                     <!-- <span class="promise-status" /> -->
                     </li>
                 </ul>
-                <h5 class = "name">To Go</h5>
+                <h5 class = "name" v-for="promises in getPromises('upcoming')" v-if="promises.status === 'upcoming'">To Go</h5>
                 <ul>
                     <li class="promise upcoming" v-for="promise in getPromises('upcoming')" @click = "selectPromise(promise)">{{ promise.promiseName }}
                     <!-- <span class="promise-status" /> -->
                     </li>
                 </ul>
-                <h5 class = "name">History</h5>
+                <h5 class = "name" v-for="promises in getPromises('end')" v-if="promises.status === 'end'">History</h5>
                 <ul>
                     <li class="promise end" v-for="promise in getPromises('end')" @click = "selectPromise(promise)">{{ promise.promiseName }}
                     <!-- <span class="promise-status" :class="{'late': promise.arrival==='ontime'}" /> -->
                     </li>
                 </ul>
             </div>
+            <div class="list" v-if="mode === 'list' && promises.length===0">
+               <div class="none">
+               		<span id="no-promise"></span>
+               		<div class="none-word">약속을 등록해주세요<br><br><br></div>
+               </div>
+            </div>
+            
+            
+            
             <!-- 상세내용 표기 -->
             <div id="promise-page" v-else-if = "mode === 'promise'"> 
                 <h2>{{selectedPromise.promiseName}}</h2>
