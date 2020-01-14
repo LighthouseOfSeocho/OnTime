@@ -107,6 +107,16 @@ let vue = new Vue({
                         axios.get("http://localhost:9000/promise", {params:{userId:this.user.id}})
                             .then(res=>{
                                 this.promises = res.data;
+                                res.data.forEach(promise=>{
+                                    this.getMembers(promise);
+                                    if(this.getDateTime(promise)<0){
+                                        promise.status = "end";
+                                    }else if(this.getDateTime(promise)<60*24){
+                                        promise.status = "today";
+                                    }else{
+                                        promise.status = "upcoming";
+                                    }
+                                });
                             })
                             .catch(e=>{
                                 console.log(e);
@@ -122,6 +132,7 @@ let vue = new Vue({
             return new Promise(function(resolve, reject){
                 navigator.geolocation.getCurrentPosition(resolve,reject);
             }).then(position=>{
+                console.log(position)
                 this.position.latitude = position.coords.latitude;
                 this.position.longitude = position.coords.longitude;
                 this.updateLocation();
@@ -241,6 +252,7 @@ let vue = new Vue({
         },
         // 반환 거리 단위 (km)
         computeDistance: function (memberLatitude,memberLongitude, promise) {
+            console.log(memberLatitude,memberLongitude)
             if(memberLatitude && memberLongitude){
                 var startLatRads = this.degreesToRadians(memberLatitude);
                 var startLongRads = this.degreesToRadians(memberLongitude);

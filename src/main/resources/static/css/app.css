@@ -51,6 +51,34 @@ ul, li {
   margin-top: -20px;
 }
 
+.name {
+	position: relative;
+	margin: 0 0 0 0;
+	text-align: center;
+	z-index: 500;
+}
+
+.none {
+  padding-top: 30%;
+}
+
+.none-word {
+	text-align: center;
+}
+
+#no-promise {
+  display: inline-block;
+  text-align: center;
+  width:40%; 
+  height: 150px;
+  margin:0 0 0 0; 
+  padding:0; 
+  position: absolute;
+  left: 30%;
+  background-image:url(/img/nopromise.gif);
+  background-size: cover;
+}
+
 .promise {
   display: flex;
   position: relative;

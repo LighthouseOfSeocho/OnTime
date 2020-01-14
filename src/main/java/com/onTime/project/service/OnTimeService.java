@@ -24,6 +24,7 @@ import com.onTime.project.model.domain.Invitation;
 import com.onTime.project.model.domain.JsonReq;
 import com.onTime.project.model.domain.Promise;
 import com.onTime.project.model.domain.User;
+import com.onTime.project.model.domain.UserLocation;
 import com.onTime.project.model.domain.UserPromise;
 
 @Service
@@ -170,14 +171,18 @@ public class OnTimeService {
 	}
 	
 	//방에 참여중인 멤버
-	public List<User> getMembers(int promiseId){
-		List<User> users = new ArrayList<>();
+	public List<UserLocation> getMembers(int promiseId){
+		List<UserLocation> users = new ArrayList<>();
 		List<UserPromise> tempList = userPromiseRepo.findByPromiseId(promiseId);
 		if(!tempList.isEmpty()) {
 			for(UserPromise up : tempList) {
 				Optional<User> temp = userRepo.findById(up.getUserId());
 				if(temp.isPresent()) {
-					users.add(temp.get());
+					UserLocation userLocation = new UserLocation(temp.get());
+					userLocation.setLatitude(up.getLatitude());
+					userLocation.setLongitude(up.getLongitude());
+					userLocation.setArrival(up.getArrival());
+					users.add(userLocation);
 				}
 			}
 		}
