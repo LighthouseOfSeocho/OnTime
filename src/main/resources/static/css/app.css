@@ -8,6 +8,10 @@ ul, li {
   margin: 0 0 0 0;
 }
 
+#placesList{
+	padding-inline-start: 40px;
+}
+
 .app > .head {
   position: relative;
   padding: 10px;

@@ -39,18 +39,19 @@
         <div class="body" v-if="category === 'Personal'">
             <!-- 내 약속 모두 보기-->
             <div class="list" v-if="mode === 'list'">
+            	<h5 class = "name">Right Now</h5>
                 <ul>
                     <li class="promise today" v-for="promise in getPromises('today')" @click = "selectPromise(promise)">{{ promise.promiseName }}
                     <!-- <span class="promise-status" /> -->
                     </li>
                 </ul>
-                <h5>앞으로의 약속</h5>
+                <h5 class = "name">To Go</h5>
                 <ul>
                     <li class="promise upcoming" v-for="promise in getPromises('upcoming')" @click = "selectPromise(promise)">{{ promise.promiseName }}
                     <!-- <span class="promise-status" /> -->
                     </li>
                 </ul>
-                <h5>지난 약속</h5>
+                <h5 class = "name">History</h5>
                 <ul>
                     <li class="promise end" v-for="promise in getPromises('end')" @click = "selectPromise(promise)">{{ promise.promiseName }}
                     <!-- <span class="promise-status" :class="{'late': promise.arrival==='ontime'}" /> -->
@@ -110,25 +111,27 @@
                 <button v-b-modal.create-promise class="add-btn" v-if="mode === 'list'">+</button>
                 <b-modal id="create-promise" title="약속 만들기" hide-footer>
                     <div class="modal-body">
-                        <p>약속이름 :</p>
-                        <input v-model="createPromise.promiseName" placeholder="약속이름" required>
-                        <p>약속장소명 :</p>
+                        <p>약속이름 : <input v-model="createPromise.promiseName" placeholder="약속이름" required size="15"></p>
+                        <p>약속장소명 : {{createPromise.placeName}}</p>
                         
                         <!-- 카카오 맵 -->
                         <div id="menu_wrap" class="bg_white">
                             <div class="option">
                                 <div>
                                     <form onsubmit="searchPlaces(); return false;">
-                                        검색 : <input type="text" value="이태원 맛집" id="keyword" size="15"> 
-                                        <button type="submit">검색하기</button> 
+                                        검색 : <input type="text" value="이태원 맛집" id="keyword" size="10" style="
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-top-width: 1px;
+    border-right-width: 1px;
+"> <button type="submit">검색하기</button> 
                                     </form>
-                                    {{createPromise.placeName}}
                                 </div>
                             </div>
                             <hr>
-                            <ol id="placesList">
+                            <ul id="placesList">
                                 <li v-for="place in searchedPlaces" @click="setPlace(place)">{{place.place_name}}</li>
-                            </ol>
+                            </ul>
                         </div>
                         <p>날짜 : </p>
                         <input type="date" v-model="createPromise.promiseDate" required>
