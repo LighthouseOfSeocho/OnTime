@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -8,22 +8,26 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=d9e5153543b0702bf46e22f4f22c32e7&libraries=services"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script><!-- Latest compiled and minified CSS -->
+
+    <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
 
     <!-- Optional theme -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap-theme.min.css" integrity="sha384-6pzBo3FDv/PJ8r2KRkGHifhEocL+1X2rVCTTkUfGk7/0pbek5mMa1upzvWbrUbOZ" crossorigin="anonymous">
 
     <!-- Latest compiled and minified JavaScript -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link href="JS/test4/app.css" rel="stylesheet" />
-    <title>가즈아앙~</title>
+    <title>Main_page</title>
+
 </head>
 
 <body>
-      
-
+    <input type="hidden" >
     <div id="app" class="app">
         <div class="head"> 
             <span class="title"> On-Time </span><br>
@@ -31,62 +35,70 @@
             <span class="list-btn" v-if = "mode !== 'list'" @click = "mode = 'list'"> &lt; </span>
         </div>
         <div class="body" v-if="category === 'Personal'">
-            <div class="list" v-if="mode === 'list'">
+            <div id="list" class="text-dark container text-center text-light" v-if="mode === 'list'">
                 <ul>
-                    <li v-for="m in Pmemos" @click = "Popen(m.title)">{{ m.title }}</li>
+                    <li v-for="promise in promises" @click = "selectPromise(promise)">{{ promise.promiseName }}</li>
                 </ul>
             </div>
             <div class="write" v-else> <!-- 상세내용 표기 -->
-                <textarea v-model = "memo.title"></textarea>
-                <button class="save-btn" type="button" @click="Psave()" :class = "{ 'full' : mode === 'write' }">저장</button> <!-- 버튼 동적으로 만들기 -->
-                <button class="remove-btn" type="button" @click="Premove()" v-if="mode === 'edit'">삭제</button>
+                <ul>
+                    <h2>{{selectedPromise.promiseName}}</h2>
+                    위치 : {{selectedPromise.placeName}} <br>
+                    약속 시간 : {{selectedPromise.promiseTime}}
+                </ul>
+                <b-button @click="getLocation">내 위치 보기</b-button>
             </div>
-            <button class="btn btn-toggle add-btn" type="button" data-toggle="modal" data-target="#myModal" v-if="mode === 'list'"> + </button>
             <!-- Modal -->
-            <div class="modal fade" id="myModal" role="modal">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                    <div class="modal-header">
-                        <h2>약속 만들기</h2>
-                    </div>
+            
+            <div>
+                <b-button v-b-modal.create-promise class="btn btn-toggle text-center add-btn" v-if="mode === 'list'">+</b-button>
+                <b-modal id="create-promise" title="약속 만들기" hide-footer>
                     <div class="modal-body">
                         <p>약속이름 :</p>
-                        <input v-model="createPromise.promiseName" placeholder="약속이름">
+                        <input v-model="createPromise.promiseName" placeholder="약속이름" required>
                         <p>약속장소명 :</p>
-                        <input v-model="createPromise.placeName" placeholder="약속장소명">
-                        <p>약속시간 :</p>
-                        <input v-model="createPromise.promiseTime" placeholder="약속시간">
+                        
+                        <!-- 카카오 맵 -->
+                        <div id="menu_wrap" class="bg_white">
+                            <div class="option">
+                                <div>
+                                    <form onsubmit="searchPlaces(); return false;">
+                                        검색 : <input type="text" value="이태원 맛집" id="keyword" size="15"> 
+                                        <button type="submit">검색하기</button> 
+                                    </form>
+                                    {{createPromise.placeName}}
+                                </div>
+                            </div>
+                            <hr>
+                            <ul id="placesList">
+                                <li v-for="place in searchedPlaces" @click="setPlace(place)">{{place.place_name}}</li>
+                            </ul>
+                            <div id="pagination"></div>
+                        </div>
+                        <p>날짜 : </p>
+                        <input type="date" v-model="createPromise.promiseDate" required>
+                        <p>시간 :
+                        <select v-model="createPromise.promiseHour">
+                            <option v-for="h in hour">{{h}}</option>
+                        </select> 시  
+                        <select v-model="createPromise.promiseMinute">
+                            <option v-for="m in minute">{{m}}</option>
+                        </select> 분
+                        <b-button class="mt-3" block @click="printInfo(this.query); $bvModal.hide('create-promise')">만들기</b-button>
                     </div>
-                    <div class="modal-footer">
-                        <button @click="printInfo(this.query)">만들기</button>
-                    </div>
-                    </div>
-                </div>
+                </b-modal>
             </div>
         </div>
 
-        <div class="body" v-if="category === 'Business'">
-            <div class="list" v-if="mode === 'list'">
-                <ul>
-                    <li v-for="m in Bmemos" @click = "Bopen(m.id)">{{ m.title }}</li>
-                </ul>
-            </div>
-            <div class="write" v-else> <!-- 상세내용 표기 -->
-                <textarea v-model = "memo.title"></textarea>
-                <button class="save-btn" type="button" @click="Bsave()" :class = "{ 'full' : mode === 'write' }">저장</button> <!-- 버튼 동적으로 만들기 -->
-                <button class="remove-btn" type="button" @click="Bremove()" v-if="mode === 'edit'">삭제</button>
-            </div>
-            <button class="add-btn" type="button" @click="Bwrite()" v-if="mode === 'list'"> + </button>
-        </div> 
     </div>
-    
-
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var query = /*[[${PI}]]*/ 'default';
+        /*]]>*/
+        
+    </script>
     <script src="JS/test4/app.js"></script>
+    <script src="JS/test4/map.js"></script>
 </body>
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    var query = /*[[${PI}]]*/ 'default';
-    /*]]>*/
-</script>
 
 </html>

@@ -1,8 +1,64 @@
-body{
-  background-color:rgb(106,178,255);
+html, body, #loginform{
+	background-color:rgb(126, 205, 241);
+	height: 100%;
+	width: 100%;
 }
-.max-small {
-    width: auto; height: auto;
-    max-width: 300px;
-    max-height: 70px;
+
+a{
+  text-decoration:none !important
+}
+.title {
+    padding-top: 30%;
+    padding-bottom: 20%;
+    height: 300px;
+    text-align: center;
+    vertical-align: bottom;
+    color: white;
+    font-size: 180px;
+}
+
+#login {
+	height: 30%;
+}
+.login {
+	position: relative;
+	margin-top: 5%;
+}
+
+.login-btn {
+	text-align: center;
+	border-radius: 80px;
+	border: 5px solid black;
+	margin-left: 20%;
+    margin-right: 20%;
+    padding-top: 5%;
+    padding-bottom: 5%;
+	font-size: 40px;
+	background-color: rgb(126, 205, 241);
+	margin-bottom: 10px;
+}
+
+#kakao {
+	border-color: white;
+	color: white;
+}
+#kakao:hover{
+	border-color: yellow;
+	color: yellow;
+} 
+#naver {
+	border-color: white;
+	color: white;
+}
+#naver:hover{
+	border-color: green;
+	color:green;
+}
+#google {
+	border-color: white;
+	color: white;
+}
+#google:hover{
+	border-color:red;
+	color:red;
 }

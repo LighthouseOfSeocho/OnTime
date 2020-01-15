@@ -21,6 +21,7 @@
         <div class="body" v-if="category === 'Personal'">
             <div class="list" v-if="mode === 'list'">
                 <ul>
+                    <li th:text="${PI.id}" v-for="m in Pmemos" @click = "Popen(m.title)">{{ m.title }}</li>
                     <li v-for="m in Pmemos" @click = "Popen(m.title)">{{ m.title }}</li>
                 </ul>
             </div>
