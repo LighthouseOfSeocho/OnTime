@@ -233,3 +233,22 @@ ul, li {
 
   }
 }
+
+.click{
+	margin-right: 5px;
+    border-radius: 15px;
+    margin-bottom: 5px;
+}
+
+.btn-wrapper button{
+	border: 1px solid rgb(126, 205, 241); 
+	background-color: rgba(0,0,0,0); 
+	color: black; 
+	padding: 5px;
+}
+
+.btn-wrapper button:hover{ 
+	color:white; 
+	background-color: rgb(126, 205, 241); 
+}
+
