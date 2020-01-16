@@ -138,6 +138,15 @@ let vue = new Vue({
                 this.updateLocation();
             })
         },
+        getRoomId: function(){
+            var tempElem = document.createElement("textarea");
+            tempElem.value = "http://localhost:9000/" + this.selectedPromise.invitation;
+            document.body.appendChild(tempElem);
+            tempElem.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempElem);
+            alert("주소가 클립보드에 복사되었습니다 친구에게 보내 주세요 >찡긋<");
+        },
         arrive: function() {
             if(this.computeDistance(this.position.latitude,this.position.longitude,this.selectedPromise)<=0.2){
                 let temp = {

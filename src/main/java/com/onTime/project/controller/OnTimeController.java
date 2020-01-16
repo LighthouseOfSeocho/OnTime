@@ -28,6 +28,7 @@ import com.onTime.project.loginApi.NaverLoginApi;
 import com.onTime.project.model.domain.JsonReq;
 import com.onTime.project.model.domain.Promise;
 import com.onTime.project.model.domain.User;
+import com.onTime.project.model.domain.UserLocation;
 import com.onTime.project.model.domain.UserPromise;
 import com.onTime.project.service.OnTimeService;
 
@@ -68,15 +69,15 @@ public class OnTimeController {
 	}
 
 	@RequestMapping(value = "/oauth")
-	@ResponseBody
-	public ModelAndView getUserInfo(@RequestParam("code") String code, ModelAndView model, HttpSession sess) {
+//	@ResponseBody
+	public String getUserInfo(@RequestParam("code") String code, ModelAndView model, HttpSession sess) {
 		JSONObject kakaoUser = ((JSONObject) kakaoLoginApi.getUserInfo(kakaoLoginApi.getAccessKakaoToken(code)));
 		kakaoUser.put("id", "k" + kakaoUser.get("id"));
 		service.createUser(kakaoUser);
 		model.addObject("PI", kakaoUser);
 		sess.setAttribute("PI", kakaoUser);
 		model.setViewName("app");
-		return model;
+		return "redirect:/";
 	}
 	
 	/* Naver Login */
@@ -86,18 +87,18 @@ public class OnTimeController {
 	}
 
 	@RequestMapping(value = "/callback")
-	@ResponseBody
-	public ModelAndView callbackNaver(@RequestParam String code, @RequestParam String state, HttpSession sess, ModelAndView model)
+//	@ResponseBody
+	public String callbackNaver(@RequestParam String code, @RequestParam String state, HttpSession sess, ModelAndView model)
 			throws IOException, ParseException, InterruptedException, ExecutionException {
 		JSONObject naverUser = ((JSONObject) naverLoginApi.getUserProfile(naverLoginApi.getAccessToken(sess, code, state)));
 		JSONObject pi = new JSONObject();
 		pi.put("id", "n" + naverUser.get("id").toString());
-		pi.put("nickname", naverUser.get("nickname").toString());
+		pi.put("nickname", naverUser.get("name").toString());
 		service.createUser(pi);
 		sess.setAttribute("PI", pi);
 		model.addObject("PI",pi);
 		model.setViewName("app");
-		return model;
+		return "redirect:/";
 	}
 
 	/* Google Login */
@@ -107,8 +108,8 @@ public class OnTimeController {
 	}
 
 	@RequestMapping(value = "/googleCallback")
-	@ResponseBody
-	public ModelAndView callbackGoogle(@RequestParam String code, @RequestParam String state, HttpSession sess, ModelAndView model)
+//	@ResponseBody
+	public String callbackGoogle(@RequestParam String code, @RequestParam String state, HttpSession sess, ModelAndView model)
 			throws IOException, ParseException, InterruptedException, ExecutionException {
 		JSONObject googleUser = ((JSONObject) googleLoginApi.getUserProfile(googleLoginApi.getAccessToken(sess, code, state)));
 		JSONObject pi = new JSONObject();
@@ -118,7 +119,7 @@ public class OnTimeController {
 		sess.setAttribute("PI", pi);
 		model.addObject("PI", pi);
 		model.setViewName("app");
-		return model;
+		return "redirect:/";
 	}
 
 	@GetMapping(value = "/user")
@@ -159,7 +160,7 @@ public class OnTimeController {
 
 	@GetMapping(value="/promise/members")
 	@ResponseBody
-	public List<User> getMembers(@RequestParam int promiseId){
+	public List<UserLocation> getMembers(@RequestParam int promiseId){
 		return service.getMembers(promiseId);
 	}
 
@@ -178,14 +179,6 @@ public class OnTimeController {
 		}
 		return model;
 	}
-
-	@GetMapping(value="/logout")
-	@ResponseBody
-	public Boolean logout(HttpSession sess, ModelAndView mv) {
-		sess.removeAttribute("PI");
-		mv.setViewName("redirect:http://localhost:9000/login");
-		return true;
-	}
 	
 	//모임에 다른 사람 초대 완료시 그 사람 ID와 모임ID mapping
 	public void joinPromise(@RequestParam("userId") String userId, @RequestParam("promiseId") int promiseId) {
@@ -195,4 +188,13 @@ public class OnTimeController {
 			System.out.println("이미 해당 약속이 존재함");
 		}
 	}
+
+	@GetMapping(value="/logout")
+	@ResponseBody
+	public Boolean logout(HttpSession sess, ModelAndView mv) {
+		sess.removeAttribute("PI");
+		mv.setViewName("redirect:http://localhost:9000/login");
+		return true;
+	}
+	
 }

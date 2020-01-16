@@ -115,7 +115,7 @@
 	            <button id="logout-btn" @click="logout()">로그아웃</button>
             </div>
             <!-- 약속 만들기( Modal ) -->
-            <div>
+            <div> <!-- v-if="mode === 'list'" -->
                 <button v-b-modal.create-promise class="add-btn" v-if="mode === 'list'">+</button>
                 <b-modal id="create-promise" title="약속 만들기" hide-footer>
                     <div class="modal-body">

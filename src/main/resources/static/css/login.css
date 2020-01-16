@@ -8,17 +8,17 @@ a{
   text-decoration:none !important
 }
 .title {
-	padding-top: 60%;
-	padding-bottom: 10%;
-	height: 20%;
-	text-align: center;
-	vertical-align: bottom;
-	color: white;
-	font-size: 70px;
+    padding-top: 30%;
+    padding-bottom: 20%;
+    height: 300px;
+    text-align: center;
+    vertical-align: bottom;
+    color: white;
+    font-size: 180px;
 }
 
 #login {
-	height: 40%;
+	height: 30%;
 }
 .login {
 	position: relative;
@@ -27,27 +27,38 @@ a{
 
 .login-btn {
 	text-align: center;
-	border-radius: 20px;
-	border: 2px solid black;
+	border-radius: 80px;
+	border: 5px solid black;
 	margin-left: 20%;
     margin-right: 20%;
     padding-top: 5%;
     padding-bottom: 5%;
-	font-size: 30px;
-	background-color: rgb(202, 255, 251);
+	font-size: 40px;
+	background-color: rgb(126, 205, 241);
+	margin-bottom: 10px;
 }
 
 #kakao {
-	border-color: rgb(207, 207, 33);
-	color: rgb(207, 207, 33);
+	border-color: white;
+	color: white;
 }
-
+#kakao:hover{
+	border-color: yellow;
+	color: yellow;
+} 
 #naver {
-	border-color: rgb(97, 255, 48);
-	color: rgb(97, 255, 48);
+	border-color: white;
+	color: white;
 }
-
+#naver:hover{
+	border-color: green;
+	color:green;
+}
 #google {
-	border-color: rgb(68, 65, 245);
-	color: rgb(68, 65, 245);
+	border-color: white;
+	color: white;
+}
+#google:hover{
+	border-color:red;
+	color:red;
 }
