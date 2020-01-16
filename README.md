@@ -16,9 +16,7 @@ APIs : Social Log-in(Google, Naver, Kakao), Kakao map, Oauth 2.0
 
 ### 2. Project Document
 
-```sh
-Lighthouse.pptx
-```
+>[@Lighthouse.pdf](https://github.com/LighthouseOfSeocho/OnTime/blob/master/Lighthouse.pdf)
 
 ### 3. Authors
 
