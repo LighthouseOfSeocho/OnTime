@@ -32,7 +32,7 @@ import com.onTime.project.model.domain.UserLocation;
 import com.onTime.project.model.domain.UserPromise;
 import com.onTime.project.service.OnTimeService;
 
-@CrossOrigin(origins = "http://localhost:9000")
+@CrossOrigin(origins = "http://192.168.22.109:9000")
 @Controller
 public class OnTimeController {
 
@@ -193,7 +193,7 @@ public class OnTimeController {
 	@ResponseBody
 	public Boolean logout(HttpSession sess, ModelAndView mv) {
 		sess.removeAttribute("PI");
-		mv.setViewName("redirect:http://localhost:9000/login");
+		mv.setViewName("redirect:http://192.168.22.109:9000/login");
 		return true;
 	}
 	

@@ -92,7 +92,7 @@ let vue = new Vue({
         },
         create: function(){
             this.createPromise.roomHostId = this.user.id;
-            axios.post("http://localhost:9000/promise", {
+            axios.post("http://192.168.22.109:9000/promise", {
                 promiseName : this.createPromise.promiseName,
                 roomHostId : this.createPromise.roomHostId,
                 placeName : this.createPromise.placeName,
@@ -104,7 +104,7 @@ let vue = new Vue({
                 .then(res=>{
                     if(res.data){
                         alert("약속이 생성되었습니다.");
-                        axios.get("http://localhost:9000/promise", {params:{userId:this.user.id}})
+                        axios.get("http://192.168.22.109:9000/promise", {params:{userId:this.user.id}})
                             .then(res=>{
                                 this.promises = res.data;
                                 res.data.forEach(promise=>{
@@ -140,7 +140,7 @@ let vue = new Vue({
         },
         getRoomId: function(){
             var tempElem = document.createElement("textarea");
-            tempElem.value = "http://localhost:9000/" + this.selectedPromise.invitation;
+            tempElem.value = "http://192.168.22.109:9000/" + this.selectedPromise.invitation;
             document.body.appendChild(tempElem);
             tempElem.select();
             document.execCommand("copy");
@@ -160,7 +160,7 @@ let vue = new Vue({
                     //지각
                     temp.arrival = 0;
                 }
-                axios.put("http://localhost:9000/user/arrival",temp)
+                axios.put("http://192.168.22.109:9000/user/arrival",temp)
                     .then(res=>{
                         alert('도착처리 되었습니다')
                     })
@@ -172,7 +172,7 @@ let vue = new Vue({
             }
         },
         updateLocation: function(){
-            axios.put("http://localhost:9000/user/position",{
+            axios.put("http://192.168.22.109:9000/user/position",{
                 userId:this.user.userId,
                 //promiseId:this.selectedPromise.promiseId,
                 latitude:this.position.latitude,
@@ -185,7 +185,7 @@ let vue = new Vue({
                 })
         },
         updateUser: function(){
-            axios.put("http://localhost:9000/user", {
+            axios.put("http://192.168.22.109:9000/user", {
                 id:this.user.userId,
                 userEmail:this.user.userEmail,
                 userName:this.user.userName,
@@ -203,7 +203,7 @@ let vue = new Vue({
                 })
         },
         getMembers: function(promise){
-            axios.get("http://localhost:9000/promise/members", {params:{promiseId:promise.id}})
+            axios.get("http://192.168.22.109:9000/promise/members", {params:{promiseId:promise.id}})
                 .then(res=>{
                     promise.members= [];
                     res.data.forEach(e=>{
@@ -247,12 +247,12 @@ let vue = new Vue({
             }, 60000);
         },
         logout: function(){
-            axios.get("http://localhost:9000/logout")
+            axios.get("http://192.168.22.109:9000/logout")
                 .then(res=>{
                 	if(res.data){
                 		this.user=null;
                 		alert('로그아웃 되었습니다');
-                		window.location.href = 'http://localhost:9000/';            		
+                		window.location.href = 'http://192.168.22.109:9000/';            		
                 	}
                 })
                 .catch(e=>{
@@ -288,7 +288,7 @@ let vue = new Vue({
         this.user = query;
         this.user.userId = query.id;
         this.renewTime(this.currentTime);
-        await axios.get("http://localhost:9000/promise", {params:{userId:this.user.userId}})
+        await axios.get("http://192.168.22.109:9000/promise", {params:{userId:this.user.userId}})
             .then(res=>{
                 this.promises = res.data;
                 res.data.forEach(promise=>{

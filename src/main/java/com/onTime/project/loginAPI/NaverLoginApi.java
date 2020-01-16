@@ -28,7 +28,7 @@ public class NaverLoginApi {
     @Value("${naver.client.secret}")
     private String CLIENT_SECRET;                      
     private final static String PROTECTED_RESOURCE_URL = "https://openapi.naver.com/v1/nid/me";
-    private final static String REDIRECT_URI = "http://localhost:9000/callback";
+    private final static String REDIRECT_URI = "http://192.168.22.109:9000/callback";
     private final static String SESSION_STATE = "oauth_state";
     
     /* 네이버 아이디로 인증  URL 생성  Method */

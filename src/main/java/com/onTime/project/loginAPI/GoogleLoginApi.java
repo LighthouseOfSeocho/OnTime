@@ -30,7 +30,7 @@ public class GoogleLoginApi {
 	@Value("${google.client.secret}")
 	private String CLIENT_SECRET;
 	private final static String PROTECTED_RESOURCE_URL = "https://www.googleapis.com/oauth2/v3/userinfo";
-	private final static String REDIRECT_URI = "http://localhost:9000/googleCallback";
+	private final static String REDIRECT_URI = "http://192.168.22.109:9000/googleCallback";
 	private final static String SESSION_STATE = "oauth_state";
 	private final static String SCOPE = "profile";
 	
